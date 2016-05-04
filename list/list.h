@@ -41,3 +41,9 @@ struct _slice_s {
     int offset;
     int length;
 };
+
+// ====================list====================
+
+struct list * list_create();
+int list_init(struct list *list);
+void list_destroy(struct list *list);
