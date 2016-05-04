@@ -9,38 +9,35 @@
 #include <pthread.h>
 
 // ====================typedef====================
-typedef struct list_node_s node_t
-typedef struct linked_list_s list_t
+struct list_node_s node_t
+struct linked_list_s list_t
 
-typedef void (*free_cb) (void*);
+typedef void (*free_cb_t) (void*);
 
 
 // ====================struct====================
 
-typedef struct _list_entry_s {
-    struct _linked_list_s *list;
-    struct _list_entry_s *prev;
-    struct _list_entry_s *next;
-    void *value;
-    int tagged;
-} list_entry_t;
+struct node {
+	struct list *list;
+	struct node *prev;
+	struct node *next;
+	void *value;
+	int tagged;
+};
 
-struct _linked_list_s {
-    list_entry_t *head;
-    list_entry_t *tail;
-    list_entry_t *cur;
-    size_t  pos;
-    size_t length;
-#ifdef THREAD_SAFE
-    pthread_mutex_t lock;
-#endif
-    free_value_callback_t free_value_cb;
-    int refcnt;
-    list_entry_t *slices;
+struct list {
+    struct node *head;
+    struct node *tail;
+    struct node *curr;
+    int pos;
+    int length;
+    pthread_mutex_t mutex;
+    free_cb_t free_cb;
+    struct list *slices;
 };
 
 struct _slice_s {
-    linked_list_t *list;
-    size_t offset;
-    size_t length;
+    struct list *list;
+    int offset;
+    int length;
 };
