@@ -9,8 +9,9 @@
 #include <pthread.h>
 
 // ====================typedef====================
-struct list_node_s node_t
-struct linked_list_s list_t
+typedef struct list_node node_t
+typedef struct linked_list list_t
+typedef struct slice slice_t
 
 typedef void (*free_cb_t) (void*);
 
@@ -18,11 +19,10 @@ typedef void (*free_cb_t) (void*);
 // ====================struct====================
 
 struct node {
-	struct list *list;
 	struct node *prev;
 	struct node *next;
+	struct list *list;
 	void *value;
-	int tagged;
 };
 
 struct list {
@@ -36,7 +36,7 @@ struct list {
     struct list *slices;
 };
 
-struct _slice_s {
+struct slice {
     struct list *list;
     int offset;
     int length;
@@ -44,6 +44,19 @@ struct _slice_s {
 
 // ====================list====================
 
+// create list
 struct list * list_create();
+// list init
 int list_init(struct list *list);
+// list destroy
 void list_destroy(struct list *list);
+// return list length
+int list_count(list_t *list);
+// remove list's nodes, and free them.
+void list_clear(list_t *list);
+
+// ====================node====================
+
+// create a new node
+node_t node_create();
+void node_destory( node_t * node );
