@@ -18,7 +18,6 @@ typedef void (*free_cb_t) (void*);
 
 // ====================struct====================
 struct bst_node {
-
 	int value;
 	void *data;
 	struct bst_node *left;
