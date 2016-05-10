@@ -9,8 +9,8 @@
 #include <pthread.h>
 
 // ====================typedef====================
-typedef struct list_node node_t
-typedef struct linked_list list_t
+typedef struct node node_t
+typedef struct list list_t
 typedef struct slice slice_t
 
 typedef void (*free_cb_t) (void*);
@@ -26,20 +26,25 @@ struct node {
 };
 
 struct list {
-    struct node *head;
-    struct node *tail;
-    struct node *curr;
-    int pos;
-    int length;
-    pthread_mutex_t mutex;
-    free_cb_t free_cb;
-    struct list *slices;
+	// basic
+	struct node *head;
+	struct node *tail;
+	int length;
+
+	// the status of list
+	struct node *cur;
+	int pos;
+
+	// special opetaions
+	pthread_mutex_t mutex;
+	free_cb_t free_cb;
+	struct list *slices;
 };
 
 struct slice {
-    struct list *list;
-    int offset;
-    int length;
+	struct list *list;
+	int offset;
+	int length;
 };
 
 // ====================list====================
