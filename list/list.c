@@ -147,7 +147,7 @@ node_t *node_pop(list_t *list)
 }
 
 // According to the position of the node on the list to remove it.
-list_t *list_remove_node_pos(list_t *list, int pos)
+node_t *list_remove_node_pos(list_t *list, int pos)
 {
 	node_t *next;
 	node_t *prev;
@@ -181,49 +181,15 @@ list_t *list_remove_node_pos(list_t *list, int pos)
 		} else if ( list -> pos > pos){
 			(list -> pos)--;
 		}
+
+		pthread_mutex_unlock(&(list->mutex));
+		return NULL;
 	}
 
 	pthread_mutex_unlock(&(list->mutex));
-	return list;
+	return node;
 }
 
-static inline
-list_entry_t *remove_entry(linked_list_t *list, size_t pos)
-{
-    list_entry_t *next, *prev;
-    list_entry_t *entry = pick_entry(list, pos);
-    MUTEX_LOCK(list->lock);
-    if(entry)
-    {
-        prev = entry->prev;
-        next = entry->next;
-        if (pos == 0)
-            list->head = next;
-        else if (pos == list->length - 1)
-            list->tail = prev;
-
-        if(prev)
-            prev->next = next;
-        if(next)
-            next->prev = prev;
-
-        list->length--;
-        entry->list = NULL;
-        entry->prev = NULL;
-        entry->next = NULL;
-
-        if (list->cur == entry) {
-            list->cur = NULL;
-            list->pos = 0;
-        } else if (list->pos > pos) {
-            list->pos--;
-        }
-        MUTEX_UNLOCK(list->lock);
-        return entry;
-    }
-    MUTEX_UNLOCK(list->lock);
-    return NULL;
-}
 
 // Retrieve the node at pos in a list, but without removing it from the list.
 // Alter the status of the list, pos and cur.
