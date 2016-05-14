@@ -7,7 +7,7 @@
 #include "list.h"
 
 
-// ====================list====================
+// ====================list_basic_api====================
 
 // create list
 list_t * list_create()
@@ -88,7 +88,7 @@ void list_clear(list_t *list)
 	pthread_mutex_unlock(&(list->mutex));
 }
 
-// ====================node====================
+// ====================node_basic_api====================
 
 // create a new node
 node_t node_create()
@@ -116,6 +116,62 @@ void node_destory( node_t * node )
 		}
 	}
 }
+
+
+// ====================node_operations====================
+
+// push a node to the tail of the list.
+int *node_push_list_tail(list_t *list, node_t *node)
+{
+	node_t *temp;
+	if (!node)
+	return 0;
+
+	pthread_mutex_lock(&(list->mutex));
+
+	if (list->length == 0){
+		list -> head = list -> tail = node;
+	}else{
+		temp = list -> tail;
+		temp -> next = node;
+
+		node -> prev = temp;
+		node -> next = NULL;
+	}
+
+	(list -> length)++;
+	node -> list = list;
+
+	pthread_mutex_unlock(&(list->mutex));
+	return 1;
+}
+
+// push a node to the head of the list
+int *node_push_list_head(list_t *list, node_t *node)
+{
+	node_t *temp;
+	if (!node)
+	return 0;
+
+	pthread_mutex_lock(&(list->mutex));
+
+	if (list->length == 0){
+		list -> head = list -> tail = node;
+	}else{
+		temp = list -> head;
+		temp -> prev = node;
+
+		node -> next = temp;
+		node -> prev = NULL;
+	}
+
+	(list -> length)++;
+	node -> list = list;
+
+	pthread_mutex_unlock(&(list->mutex));
+	return 1;
+}
+
 
 // pop a node from the end of list, or the bottom of the stack.
 node_t *node_pop(list_t *list)
@@ -145,6 +201,10 @@ node_t *node_pop(list_t *list)
 	pthread_mutex_unlock(&(list->mutex));
 	return node;
 }
+
+
+
+// ====================list_operations====================
 
 // According to the position of the node on the list to remove it.
 node_t *list_remove_node_pos(list_t *list, int pos)
