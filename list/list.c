@@ -120,32 +120,6 @@ void node_destory( node_t * node )
 
 // ====================node_operations====================
 
-// push a node to the tail of the list.
-int *node_push_list_tail(list_t *list, node_t *node)
-{
-	node_t *temp;
-	if (!node)
-	return 0;
-
-	pthread_mutex_lock(&(list->mutex));
-
-	if (list->length == 0){
-		list -> head = list -> tail = node;
-	}else{
-		temp = list -> tail;
-		temp -> next = node;
-
-		node -> prev = temp;
-		node -> next = NULL;
-	}
-
-	(list -> length)++;
-	node -> list = list;
-
-	pthread_mutex_unlock(&(list->mutex));
-	return 1;
-}
-
 // push a node to the head of the list
 int *node_push_list_head(list_t *list, node_t *node)
 {
@@ -172,18 +146,17 @@ int *node_push_list_head(list_t *list, node_t *node)
 	return 1;
 }
 
-
-// pop a node from the end of list, or the bottom of the stack.
-node_t *node_pop(list_t *list)
+// pop a node from the head of list, or the top of the stack.
+node_t *node_pop_list_head(list_t *list)
 {
 	node_t *node;
 	pthread_mutex_lock(&(list->mutex));
 
-	node = list -> tail;
+	node = list -> head;
 	if (node){
-		list -> tail = node -> prev;
-		if(list -> prev){
-			list->tail->next = NULL;
+		list -> head = node -> next;
+		if(list -> head){
+			list->head->prev = NULL;
 		}
 		(list->length)--;
 
@@ -202,6 +175,60 @@ node_t *node_pop(list_t *list)
 	return node;
 }
 
+// push a node to the tail of the list.
+int *node_push_list_tail(list_t *list, node_t *node)
+{
+	node_t *temp;
+	if (!node)
+	return 0;
+
+	pthread_mutex_lock(&(list->mutex));
+
+	if (list->length == 0){
+		list -> head = list -> tail = node;
+	}else{
+		temp = list -> tail;
+		temp -> next = node;
+
+		node -> prev = temp;
+		node -> next = NULL;
+	}
+
+	(list -> length)++;
+	node -> list = list;
+
+	pthread_mutex_unlock(&(list->mutex));
+	return 1;
+}
+
+// pop a node from the tail of list, or the bottom of the stack.
+node_t *node_pop_list_tail(list_t *list)
+{
+	node_t *node;
+	pthread_mutex_lock(&(list->mutex));
+
+	node = list -> tail;
+	if (node){
+		list -> tail = node -> prev;
+		if(list -> tail){
+			list->tail->next = NULL;
+		}
+		(list->length)--;
+
+		node->list = NULL;
+		node->prev = NULL;
+		node->next = NULL;
+
+		if (list->cur == entry)
+	            list->cur = NULL;
+	}
+	if (list->length == 0){
+		list -> tail = list -> head = NULL;
+	}
+
+	pthread_mutex_unlock(&(list->mutex));
+	return node;
+}
 
 
 // ====================list_operations====================
