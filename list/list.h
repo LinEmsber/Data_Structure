@@ -41,11 +41,6 @@ struct list {
 	struct list *slices;
 };
 
-struct slice {
-	struct list *list;
-	int offset;
-	int length;
-};
 
 // ====================list_basic_api====================
 
@@ -106,3 +101,5 @@ node_t *list_pick_node(list_t *list, int pos);
 
 // To swap two nodes of the list.
 void list_swap_nodes( list_t *list, int pos_1, inst pos_2);
+
+// To iterate over the list.

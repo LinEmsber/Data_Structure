@@ -48,9 +48,6 @@ int list_init(list_t *list)
 void list_destroy(list_t *list)
 {
 	if(list){
-		while (list->slices){
-			slice_destroy(list->slices->value);
-		}
 
 		list_clear(list);
 		pthread_mutex_destory(&(list->mutex));
@@ -404,3 +401,11 @@ void list_swap_nodes( list_t *list, int pos_1, inst pos_2)
 
 	pthread_mutex_unlock(&(list->mutex));
 }
+
+// To iterate over the list.
+#define list_for_each(list) \
+	for (pos = (list)->next; pos != NULL; pos = pos->next)
+
+// how to use list_for_each():
+list_for_each(list)
+     puts((char *) pos->data);
