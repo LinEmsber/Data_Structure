@@ -6,7 +6,7 @@
 
 #include "hash_table.h"
 
-hash_table_t *create_hash_table(int size)
+hash_table_t *hash_table_create(int size)
 {
 	int i;
 	hash_table_t *new_table;
@@ -30,7 +30,9 @@ hash_table_t *create_hash_table(int size)
 	return new_table;
 }
 
-int hash_string( hash_table_t *hash_table, char *key)
+
+// Hash a string for a particular hash table.
+int hash_table_hash_string( hash_table_t *hash_table, char *key)
 {
 	unsigned long int hash_val;
 	int i = 0;
@@ -42,4 +44,29 @@ int hash_string( hash_table_t *hash_table, char *key)
 		i++;
 	}
 	return hash_val % hash_table -> size;
+}
+
+// Create a key-value pair.
+entry_t *hash_table_newpair(char *key, char *value)
+{
+	entry_t *newpair;
+
+	newpair = malloc( sizeof(entry_t);
+	if ( newpair == NULL ){
+		return NULL;
+	}
+
+	newpair -> key = strdup(key);
+	if ( newpair -> key == NULL ){
+		return NULL;
+	}
+
+	newpair -> value = strdup(value);
+	if ( newpair -> value == NULL ){
+		return NULL;
+	}
+
+	newpair -> next = NULL;
+
+	return newpair;	
 }
