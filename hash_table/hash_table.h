@@ -20,13 +20,14 @@ struct _hash_entry
 	void *key;
 	void *value;
 
-	unsigned int hashvalue;
+	unsigned int hash_value;
 	struct _hash_entry *next;
 };
 
 struct _hash_table
 {
 	int size;
+	int count;
 	struct _hash_entry **table;
 
 	unsigned int (*hash_function)(const void *key);

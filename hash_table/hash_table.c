@@ -58,11 +58,11 @@ unsigned int hash_string(const void *key)
 
 
 // Create a key-value pair.
-entry_t *hash_table_newpair(char *key, char *value)
+hash_entry *hash_table_newpair(char *key, char *value)
 {
-	entry_t *newpair;
+	hash_entry *newpair;
 
-	newpair = malloc( sizeof(entry_t);
+	newpair = malloc( sizeof(hash_entry);
 	if ( newpair == NULL ){
 		return NULL;
 	}
@@ -80,4 +80,57 @@ entry_t *hash_table_newpair(char *key, char *value)
 	newpair -> next = NULL;
 
 	return newpair;
+}
+
+int hash_table_insert(hash_table *table, void *key, void *value)
+{
+	int index;
+	hash_entry *new_entry;
+
+	if ( ( ((double)table->count) / (table->size) ) > 0.6 ){
+		hash_table_grow(table);
+	}
+
+	new_entry = (hash_entry *)malloc(sizeof(hash_entry));
+	if (new_entry == NULL){
+		return -1;
+	}
+
+	hash_entry -> hash_value = hash(table, key);
+	hash_entry -> key = key;
+	hash_entry -> value = value;
+
+}
+
+
+int insert(hashtable *table, void *key, void *value)
+{
+	unsigned int index;
+	hashentry *newentry;
+
+	// check to see if the table is getting too full, and if so, enlarge it
+	if((((double)table->count)/(table->size))>.6)
+	{
+		growTable(table);
+	}
+
+	newentry = (hashentry *)malloc(sizeof(hashentry));
+
+	if(NULL == newentry)
+	{
+		return 1;
+	}
+
+	//hash the key to be added, and add the k,v pair to the struct
+	newentry->hashvalue = hash(table,key);
+	newentry->key = key;
+	newentry->value = value;
+
+	//find the array index where the new entry will go, and add it to the list of entries at that index
+	index = indexOf(newentry->hashvalue,table->size);
+	newentry->next = table->hash_array[index];
+	table->hash_array[index] = newentry;
+	table->count++;
+
+	return 0;
 }
