@@ -9,25 +9,24 @@
 unsigned int hash(hash_table *table, const void *key)
 {
 	unsigned int h = table->hash_function(key);
-	
-	h = ((hash << 5) + hash) + c;
-	// h += ~(h << 9);
-	// h ^= (( h >> 14) | (h << 18));
-	// h += (h << 4);
-	// h ^= ((h >> 10) | (h << 22));
+
+	h += ~(h << 9);
+	h ^= (( h >> 14) | (h << 18));
+	h += (h << 4);
+	h ^= ((h >> 10) | (h << 22));
 	return h;
 }
 
-hash_table_t *hash_table_create(int size)
+hash_table *hash_table_create(int size)
 {
 	int i;
-	hash_table_t *new_table;
+	hash_table *new_table;
 
 	if (size < 1){
 		return NULL;
 	}
 
-	if ( new_table = (hash_table_t*)malloc( sizeof(hash_table_t)) == NULL){
+	if ( new_table = (hash_table*)malloc( sizeof(hash_table)) == NULL){
 		return NULL;
 	}
 
@@ -42,21 +41,21 @@ hash_table_t *hash_table_create(int size)
 	return new_table;
 }
 
-
-// Hash a string for a particular hash table.
-int hash_table_hash_string( hash_table_t *hash_table, char *key)
+// uses the well-known djb2 hash algorithm for strings
+unsigned int hash_string(const void *key)
 {
-	unsigned long int hash_val;
-	int i = 0;
+	char *string = (char *)key;
+	unsigned int hash = 0;
+	int string_ch = 0;
 
-	// convert our string to an integer.
-	while (hash_val < ULONG_MAX ** i < strlen(key) ){
-		hash_val = hash_val << 8;
-		hash_val = hash_val + key[i];
-		i++;
+	while((string_ch = *string++))
+	{
+		hash = ((hash << 5) + hash) ^ string_ch;
 	}
-	return hash_val % hash_table -> size;
+	return hash;
 }
+
+
 
 // Create a key-value pair.
 entry_t *hash_table_newpair(char *key, char *value)

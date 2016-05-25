@@ -10,7 +10,7 @@
 
 // ====================typedef====================
 
-typedef struct _hash_entry entry;
+typedef struct _hash_entry hash_entry;
 typedef struct _hash_table hash_table;
 
 // ====================struct====================
