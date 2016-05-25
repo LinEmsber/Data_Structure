@@ -6,6 +6,18 @@
 
 #include "hash_table.h"
 
+unsigned int hash(hash_table *table, const void *key)
+{
+	unsigned int h = table->hash_function(key);
+	
+	h = ((hash << 5) + hash) + c;
+	// h += ~(h << 9);
+	// h ^= (( h >> 14) | (h << 18));
+	// h += (h << 4);
+	// h ^= ((h >> 10) | (h << 22));
+	return h;
+}
+
 hash_table_t *hash_table_create(int size)
 {
 	int i;
@@ -68,5 +80,5 @@ entry_t *hash_table_newpair(char *key, char *value)
 
 	newpair -> next = NULL;
 
-	return newpair;	
+	return newpair;
 }

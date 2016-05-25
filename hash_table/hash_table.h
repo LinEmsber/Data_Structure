@@ -10,18 +10,40 @@
 
 // ====================typedef====================
 
-typedef struct entry_s entry_t;
-typedef struct hash_table_s hash_table_t;
+typedef struct _hash_entry entry;
+typedef struct _hash_table hash_table;
 
 // ====================struct====================
 
-struct entry_s{
-	char *key;
-	char *value;
-	struct entry_s *next;
-}
+struct _hash_entry
+{
+	void *key;
+	void *value;
 
-struct hash_table_s{
+	unsigned int hashvalue;
+	struct _hash_entry *next;
+};
+
+struct _hash_table
+{
 	int size;
-	struct entry_s **table;
-}
+	struct _hash_entry **table;
+
+	unsigned int (*hash_function)(const void *key);
+	int (*compare)(const void *, const void *);
+};
+
+
+unsigned int hash(hashtable *, const void *);
+unsigned int hash_double(const void *);
+unsigned int hash_int(const void *);
+unsigned int hash_string(const void *);
+int cmp_string(const void *, const void *);
+int cmp_double(const void *, const void *);
+int cmp_int(const void *, const void *);
+unsigned int indexOf(unsigned int , int );
+int growTable(hashtable *);
+int insert(hashtable *,void *,void *);
+void *find(hashtable *,void *);
+void *removeKey(hashtable *,void *);
+void deleteTable(hashtable *);
