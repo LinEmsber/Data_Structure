@@ -100,6 +100,9 @@ node_t *list_remove_node_pos(list_t *list, int pos);
 node_t *list_pick_node(list_t *list, int pos);
 
 // To swap two nodes of the list.
-void list_swap_nodes( list_t *list, int pos_1, inst pos_2);
+void list_swap_nodes( list_t *list, int pos_1, int pos_2);
 
 // To iterate over the list.
+#define list_for_each(list) \
+	for (pos = (list)->next; pos != NULL; pos = pos->next)
+	
