@@ -339,48 +339,64 @@ void print_breadth_first_search(bst_node_t* root)
 // The depth first search pre order.
 void DFS_pre_order(bst_node_t *root)
 {
+	int ret = 0;
+
+	if (root == NULL)
+		return 0;
+
 	if (root){
-		printf("%d  ", root->value);
-
-		if (root->left)	{
-			DFS_pre_order(root->left);
-		}
-		if (root->right){
-			DFS_pre_order(root->right);
-		}
-
-	}
-}
-
-// The depth first search in order.
-void DFS_in_order(bst_node_t *root)
-{
-	if (root){
+		ret = root->value;
 
 		if (root->left)	{
 			DFS_in_order(root->left);
 		}
 
-		printf("%d  ", root->value);
+		if (root->right){
+			DFS_in_order(root->right);
+		}
+	}
+	return ret;
+}
+
+// The depth first search in order.
+void DFS_in_order(bst_node_t *root)
+{
+	int ret = 0;
+
+	if (root == NULL)
+		return 0;
+
+	if (root){
+		if (root->left)	{
+			DFS_in_order(root->left);
+		}
+
+		ret = root->value;
 
 		if (root->right){
 			DFS_in_order(root->right);
 		}
 	}
+	return ret;
 }
 
 // The depth first search post order
-void DFS_post_order(bst_node_t *root)
+int DFS_post_order(bst_node_t *root)
 {
+	int ret = 0;
+
+	if (root == NULL)
+		return 0;
+
 	if (root){
-
-
 		if (root->left)	{
 			DFS_post_order(root->left);
 		}
 		if (root->right){
 			DFS_post_order(root->right);
 		}
-		printf("%d  ", root->value);
+
+		ret = root->value;
 	}
+	return ret;
 }
