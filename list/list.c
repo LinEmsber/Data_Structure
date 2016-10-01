@@ -382,7 +382,7 @@ node_t *list_pick_node(list_t *list, int pos)
 
 
 // To swap two nodes of the list.
-void list_swap_nodes( list_t *list, int pos_1, inst pos_2)
+void list_swap_nodes( list_t *list, int pos_1, int pos_2)
 {
 	node_t *node_1 = list_pick_node(list, pos_1);
 	node_t *node_2 = list_pick_node(list, pos_2);
@@ -402,10 +402,3 @@ void list_swap_nodes( list_t *list, int pos_1, inst pos_2)
 	pthread_mutex_unlock(&(list->mutex));
 }
 
-// To iterate over the list.
-#define list_for_each(list) \
-	for (pos = (list)->next; pos != NULL; pos = pos->next)
-
-// how to use list_for_each():
-list_for_each(list)
-     puts((char *) pos->data);
