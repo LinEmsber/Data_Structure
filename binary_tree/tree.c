@@ -1,22 +1,33 @@
-/* A binary search tree
- * File: tree.c
- * Author: Lin Emsber
- * Create Date: 2016, May, 3
- */
+/* tree.c */
 
 #include "tree.h"
 
-// ==================compare==================
 
-// The number compare function for adding a node to the binary search tree.
-int compare_number(int original_value, int new_value)
+// ======== typedef ========
+typedef struct node node_t;
+typedef struct tree tree_t;
+
+
+
+// ======== compare siblings ========
+
+/* compare two keys to determine the node to turn left or right.
+ *
+ * 	equal == 0
+ * 	/	\
+ * left == -1	right == 1
+ *
+ * @key_1: the value of key_1
+ * @key_2: the value of key_2
+ */
+int compare_key(int key_1, int key_2)
 {
 	// turn left, return -1
-	if(original_value > new_value) {
+	if(key_1 > key_2) {
 		return -1;
 
 	// turn right, return 1
-	}else if(original_value < new_value) {
+	}else if(key_1 < key_2) {
 		return 1;
 
 	// equal, return 1
@@ -25,155 +36,440 @@ int compare_number(int original_value, int new_value)
 	}
 }
 
-// 		(equal)
-// 		0
-//          /        \
-// 	/		\
-// (left)		   (right)
-// -1			       1
 
+// ======== node ========
 
-// ==================tree==================
-// To create a new binary search tree.
-tree_t *tree_create()
+/* Allocate a memory for a node.
+ */
+node_t *node_create()
 {
-	tree_t *tree = (tree_t*) malloc (sizeof(tree_t));
-	return tree;
+        node_t *node = (node_t *) malloc ( sizeof(node_t) );
+        return node;
 }
 
-// To initialize binary search tree.
-void tree_init( tree_t *tree)
-{
-	tree -> root = NULL;
-	tree -> count = 0;
-}
 
-// To remove the nodes from a tree, including free the memory of this node.
-void tree_clear_node( tree_t *tree)
+/* Remove a node, including children of node.
+ *
+ * @tree: the node want to remove.
+ */
+void node_remove(node_t *node)
 {
-	node_free(tree->root);
-	tree -> root = NULL;
-	tree -> count = 0;
-}
-
-// To deallocate a binary search tree, including remove its all nodes.
-void tree_remove( tree_t *tree)
-{
-	tree_clear_node(tree);
-	free(tree);
-}
-
-// To return the count of the tree.
-int tree_count(tree_t *tree)
-{
-	return tree -> count;
-}
-
-// ==================node==================
-// To create a node of binary search tree.
-node_t *node_create ()
-{
-	node_t *node = (node_t *)malloc(sizeof(node_t));
-	return node;
-}
-
-// To free the hierarchical nodes(children) of a root/node(parent).
-void node_free( node_t *root)
-{
-	if (root != 0){
-		node_free(root->left);
-		node_free(root->right);
-		free(root);
+        if (node != NULL){
+                node_remove(node -> left);
+                node_remove(node -> right);
+                free(node);
 	}
 }
 
-// To initialize a node.
-node_t *node_init( node_t*node)
+
+/* Initialize a node.
+ *
+ * @tree: the node want to initialize.
+ */
+node_t *node_init(node_t *node)
 {
-	node -> value = 0;
-	node -> data = NULL;
-	node -> left = NULL;
-	node -> right = NULL;
+        node -> key = 0;
+        node -> data = NULL;
+        node -> left = NULL;
+        node -> right = NULL;
+        return node;
+}
+
+/* input a key into a node
+ */
+node_t *node_input_key(node_t *node, int key)
+{
+	node -> key = key;
 	return node;
 }
 
-// To input the value to a node.
-node_t *node_input_value(node_t*node, int input_value)
-{
-	node -> value = input_value;
-	return node;
-}
-
-// To input the data to a node.
-node_t *node_input_data(node_t*node, void* input_data)
+/* input a data into a node.
+ */
+node_t *node_input_data(node_t *node, void *input_data)
 {
 	node -> data = input_data;
 	return node;
 }
 
 
-// ==================node add==================
-// A node be added a node with value.
-node_t *node_add_node( node_t *node, int input_value)
+// ======== tree ========
+
+/* Allocate a memory for a tree.
+ */
+tree_t *tree_create()
 {
-	if (node == NULL){
-		node = node_create();
-		node_init(node);
-		node_input_value(node, input_value);
-		return node;
-	} else {
-		// node -> value > input_value, turn left
-		if (compare_num(node->value, input_value) == -1 ){
-			node -> left = node_add_node(node->left, input_value);
-		}
-
-		// node -> value < input_value, turn right
-		if (compare_num(node->value, input_value) == 1 ){
-			node -> right = node_add_node(node->right, input_value);
-
-		}
-		// the input_value has already contained in the tree, put it in
-		// the right side.
-		if (compare_num(node->value, input_value) == 0 ){
-			node -> right = node_add_node(node->right, input_value);
-		}
-
-		return node;
-	}
-}
-
-// A tree be added a node with value.
-tree_t *tree_add_node( tree_t *tree, int input_value)
-{
-	tree -> root = node_add_node(tree->root, input_value);
-	(tree -> count) ++;
+	tree_t *tree = (tree_t*) malloc ( sizeof(tree_t) );
 	return tree;
 }
 
 
+/* Initialize a tree.
+ *
+ * @tree: the tree want to initialize.
+ */
+void tree_init( tree_t *tree)
+{
+	tree -> root = NULL;
+	tree -> count = 0;
+}
 
-// ==================left most==================
-// To return the left most node from a node.
+
+/* Remove a tree.
+ *
+ * @tree: the tree want to remove.
+ */
+void tree_remove(tree_t *tree)
+{
+	if ( tree != NULL && tree->root != NULL ){
+		node_remove(tree -> root);
+		tree -> root = NULL;
+		tree -> count = 0;
+	}
+}
+
+/* Return the count of the tree.
+ *
+ * @tree: the tree we want to count node.
+ */
+int tree_count(tree_t *tree)
+{
+	return tree -> count;
+}
+
+
+// ======== search ========
+
+/* search a node with a specific key from a tree in recurive method.
+ *
+ * @root: the tree we want to search
+ * @taret_key: the specific key
+ */
+node_t *search_recurively(node_t *root, int target_key)
+{
+        if (root == NULL){
+
+                return NULL;
+
+        }else if(target_key == root -> key){
+
+                return root;
+
+        }else{
+                if (target_key > root->key){
+			search_recurively(root->right, target_key);
+
+		}else if(target_key < root->key){
+			search_recurively(root->left, target_key);
+
+		}
+        }
+
+	return NULL;
+}
+
+/* search a node with a specific key from a tree in iterative method.
+ *
+ * @root: the tree we want to search
+ * @taret_key: the specific key
+ */
+node_t *search_iteratively(node_t *root, int target_key)
+{
+        node_t *current = root;
+
+        while ( current != NULL){
+
+                if (target_key == root -> key){
+                        return current;
+                        break;
+
+                }else if (target_key > root->key){
+                        search_iteratively(root->right, target_key);
+
+                }else if(target_key < root->key){
+                        search_iteratively(root->left, target_key);
+
+
+                }
+        }
+
+	return NULL;
+}
+
+// ======== insert node ========
+
+/* insert a node into a node
+ *
+ * @node: the node to be inserted node
+ * @key: the key of inserted node
+ */
+node_t *node_insert_node( node_t *node, int key)
+{
+	if (node == NULL){
+		node_t *node = node_create();
+		node_init(node);
+		node_input_key(node, key);
+		return node;
+
+	}else{
+                int compare_ret = compare_key(node->key, key);
+
+		// If node -> key > input_key, turn left.
+		if (compare_ret == -1 ){
+			node -> left = node_insert_node(node->left, key);
+
+		// If node -> key < input_key, turn right.
+                // It the input_key has already contained in the tree, and put it in the right side.
+                }else if (compare_ret == 1 || compare_ret == 0){
+			node -> right = node_insert_node(node->right, key);
+
+                }
+		return node;
+	}
+}
+
+/* insert a node into a tree
+ *
+ * @tree: the tree to be inserted node
+ * @key: the key of inserted node
+ */
+tree_t *tree_insert_node( tree_t *tree, int key)
+{
+	tree -> root = node_insert_node(tree->root, key);
+	(tree -> count) ++;
+
+	return tree;
+}
+
+
+// ======== left most ========
+
+// Return the left most node from a node.
 node_t *node_left_most( node_t *node)
 {
+	if (node == NULL)
+		return NULL;
+
+	node_t *target_node = NULL;
+
 	while( node != NULL){
 		if (node -> left == NULL){
-			return node;
+			target_node = node;
 		}else{
 			node = node -> left;
 		}
 	}
+
+	return target_node;
 }
 
-// To return the left most node from a node.
-tree_t *tree_left_most(tree_t *tree)
+// Return the left most node from a node.
+node_t *tree_left_most(tree_t *tree)
 {
-	node_t *node = tree->root;
-	return node_left_most(node);
+	return node_left_most(tree -> root);
 }
 
 
-// ==================remove node==================
+// ======== right most ========
+
+// Return the right most node from a node.
+node_t *node_right_most( node_t *node)
+{
+	if (node == NULL)
+		return NULL;
+
+	node_t *target_node = NULL;
+
+	while( node != NULL){
+		if (node -> right == NULL){
+			target_node = node;
+		}else{
+			node = node -> right;
+		}
+	}
+
+	return target_node;
+}
+
+// Return the right most node from a node.
+node_t *tree_right_most(tree_t *tree)
+{
+	return node_left_most(tree -> root);
+}
+
+// ======== node swap ========
+void node_swap(node_t *node_1, node_t *node_2)
+{
+	if (node_1 != NULL && node_2 != NULL){
+		node_t *tmp;
+
+		tmp = node_1;
+		node_1 = node_2;
+		node_2 = tmp;
+	}
+}
+
+
+// ======== find parent node ========
+/* search the parent of the specific node from the root of tree.
+ *
+ * @root: the root of the tree which we want to search.
+ * @target_node: the node which we want to find it parent node.
+ */
+node_t* node_find_parent(node_t *root, node_t *target_node)
+{
+	if(root == target_node){
+	    return NULL;
+	}
+
+	// start searching from the root
+	while(root != NULL){
+
+		// trun left to search
+		if(root -> key > target_node -> key) {
+
+			// If the key of left child is equal the key of target node, we find the
+			// node's parent.
+			// If the left child is NULL, the while loop would not continue, and
+			// return NULL outside this loop.
+			if(root -> left != NULL) {
+				if(root -> left -> key == target_node -> key)
+					return root;
+				root = root -> left;
+			}
+
+		// trun right to search
+		}else{
+
+			if(root -> right != NULL) {
+				if(root -> right -> key == target_node -> key)
+					return root;
+				root = root -> right;
+			}
+		}
+	}
+	return NULL;
+}
+
+
+// def replace_node_in_parent(self, new_value=None):
+//     if self.parent:
+//         if self == self.parent.left_child:
+//             self.parent.left_child = new_value
+//         else:
+//             self.parent.right_child = new_value
+//     if new_value:
+//         new_value.parent = self.parent
+
+
+
+
+
+
+
+
+
+
+
+// ======== remove node ========
+
+void *node_remove_node(tree_t *tree, int key)
+{
+	if (tree != NULL)
+		return NULL
+
+	node_t *target_node = search_recurively(tree, key);
+	node_t *target_node_parent = node_find_parent(tree, target_node);
+
+	// node with both children
+	if (target_node -> left != NULL && target_node -> right != NULL){
+
+	}else if (target_node -> left != NULL){
+
+	}else{
+
+	}
+}
+
+
+int delete(node_t** root,int key)
+{
+	node_t *find=search(*root,key);
+	if(find==NULL){
+		return 0;
+	}
+
+	if(find->left==NULL&&find->right==NULL)
+	{
+		if(find==*root)
+			free(find);
+		else
+		{
+			node_t *parent=findparent(*root,find);
+			if(parent->left!=NULL)
+				if(parent->left==find)
+					parent->left=NULL;
+			if(parent->right!=NULL)
+				if(parent->right==find)
+					parent->right=NULL;
+			free(find);
+		}
+	}
+	else if(find->left!=NULL&&find->right==NULL)
+	{
+		node_t* save=find->left;
+		find->val=find->left->val;
+		find->right=find->left->right;
+		find->left=find->left->left;
+		free(save);
+	}
+	else if(find->right!=NULL&&find->left==NULL)
+	{
+		node_t* save=find->right;
+		find->val=find->right->val;
+		find->left=find->right->left;
+		find->right=find->right->right;
+		free(save);
+	}
+	else
+	{
+		node_t* heir=successor(find);
+		int key=heir->val;
+		if(delete(root,key))
+			find->val=key;
+	}
+
+	return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+def binary_tree_delete(self, key):
+    if key < self.key:
+        self.left_child.binary_tree_delete(key)
+    elif key > self.key:
+        self.right_child.binary_tree_delete(key)
+    else: # delete the key here
+        if self.left_child and self.right_child: # if both children are present
+            successor = self.right_child.find_min()
+            self.key = successor.key
+            successor.binary_tree_delete(successor.key)
+        elif self.left_child:   # if the node has only a *left* child
+            self.replace_node_in_parent(self.left_child)
+        elif self.right_child:  # if the node has only a *right* child
+            self.replace_node_in_parent(self.right_child)
+        else: # this node has no children
+            self.replace_node_in_parent(None)
+
+
+
 // To remove the left most node.
 void node_remove_left_most(node_t *node)
 {
@@ -289,7 +585,6 @@ int node_height(node_t* node)
 		}
 	}
 }
-
 
 // ==================breadth first search==================
 // Print nodes at a given level.
