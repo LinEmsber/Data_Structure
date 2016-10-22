@@ -19,8 +19,9 @@ struct tree
 
 struct node
 {
-        int key;
+        int value;
         void *data;
         struct node *left;
         struct node *right;
+	struct node *parent;
 };
