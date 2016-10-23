@@ -351,240 +351,87 @@ node_t* node_find_parent(node_t *root, node_t *target_node)
 }
 
 
-// def replace_node_in_parent(self, new_value=None):
-//     if self.parent:
-//         if self == self.parent.left_child:
-//             self.parent.left_child = new_value
-//         else:
-//             self.parent.right_child = new_value
-//     if new_value:
-//         new_value.parent = self.parent
+// ======== find successor ========
+/* Find the node's successor
+ *
+ * @node: the successor of node which we want find
+ */
+node_t *node_successor(node_t * node)
+{
+	if( node != NULL )
+		node = node -> right;
 
+	while(node != NULL){
 
-
-
-
-
-
-
-
+		if(node -> left == NULL)
+			return node;
+		else
+			node = node -> left;
+	}
+	return node;
+}
 
 
 // ======== remove node ========
-
-void *node_remove_node(tree_t *tree, int value)
+/* remove a node with specific value from a hierarchy of node
+ *
+ * @node: the hierarchy of node
+ * @value: the specific value of node
+ */
+void *node_remove_node(node_t *node, int value)
 {
-	if (tree != NULL)
-		return NULL
-
-	node_t *target_node = search_recurively(tree, value);
-	node_t *target_node_parent = node_find_parent(tree, target_node);
-
-	// node with both children
-	if (target_node -> left != NULL && target_node -> right != NULL){
-
-	}else if (target_node -> left != NULL){
-
-	}else{
-
-	}
-}
-
-
-void delete(tree **root, int value) {
-	// Nothing to do if empty tree
-	if (*root == NULL) {
-		return;
-	}
-
-	tree *parent = *root,
-		 *current = *root;
-
-	while (current != NULL) {
-		// value was found on a node
-		if (value == current->value) {
-
-			// delete a leaf node OR an empty tree
-			if (current->left == NULL && current->right == NULL) {
-				if (current == *root) {
-					free(*root);
-					*root = NULL;
-				} else {
-					if (current->value < parent->value) {
-						parent->left = NULL;
-					} else {
-						parent->right = NULL;
-					}
-					free(current);
-				}
-			}
-
-			// delete a single-child node
-			else if (current->left == NULL || current->right == NULL) {
-				// current is the left child of parent
-				if (current->value < parent->value) {
-					// If current only has right child
-					if (current->left == NULL) {
-						// parent left child is replaced by current right child.
-						parent->left = current->right;
-						current->right->parent = parent;
-					} else {
-						parent->left = current->left;
-						current->left->parent = parent;
-					}
-				// current is the right child of parent
-				} else {
-					if (current->left == NULL) {
-						parent->right = current->right;
-						current->right->parent = parent;
-					} else {
-						parent->right = current->left;
-						current->left->parent = parent;
-					}
-				}
-				free(current);
-			}
-
-			// delete a double-child node, (ROOT that has two child cannot be deleted)
-			else {
-				if (current == *root) {
-					printf("Sorry, cannot delete root node that has both left and right child!\n");
-				} else {
-					// the min item of right child, or the most left child of right child
-					tree *submin = min(current->right);
-
-					// make a clone of min in right subtree
-					tree *clone = malloc(sizeof(tree));
-
-					clone->value = submin->value;
-					clone->parent = parent;
-					clone->left = current->left;
-
-					if (submin == current->right) {
-						clone->right = NULL;
-					} else {
-						clone->right = current->right;
-					}
-
-					// assign clone to parent left/right
-					if (current->value < parent->value) {
-						parent->left = clone;
-					} else {
-						parent->right = clone;
-					}
-
-					// update parent of the lifted node
-					if (submin->value < submin->parent->value) {
-						submin->parent->left = NULL;
-					} else {
-						submin->parent->right = NULL;
-					}
-
-					// free min AND current
-					free(current);
-					free(submin);
-				}
-			}
-
-			return;
-
-		// continue search for value
-		} else {
-			parent = current;
-			if (value < current->value) {
-				current = current->left;
-			} else {
-				current	= current->right;
-			}
-		}
-	}
-
-	printf("%d is not found in tree\n", value);
-
-}
-
-
-// To remove a node that is with specific value from the hierarchy of a node.
-int node_delete_node(node_t* root, int value)
-{
-	// find the target node first
-	node_t *target_node = search(root, value);
+	node_t * target_node = search_recurively(*node, value);
 	if(target_node == NULL){
 		return 0;
-	}
-
-	// If the target node without any child.
-	if(target_node -> left == NULL && find -> right == NULL) {
-
-		if(target_node == root){
-			free(target_node );
-		} else {
-
-			// If the target node is the left child
-			if( target_node -> parent -> left == target_node)
-				parent->left=NULL;
-
-			// If the target node is the right child
-			if( target_node -> parent -> right == target_node)
-				parent->right=NULL;
-
-			free(target_node );
-		}
-
-	// If the target node has left child
-	} else if(target_node -> left != NULL && target_node -> right == NULL) {
-
-		node_t *save = target_node ->left;
-		target_node -> value = target_node -> left-> value;
-		target_node -> right = target_node -> left-> right;
-		target_node -> left = target_node -> left-> left;
-		free(save);
-
-	// If the target node has right child
-	} else if(target_node -> right != NULL && target_node -> left == NULL) {
-
-		node_t * save = target_node->right;
-		target_node -> value = target_node -> right -> value;
-		target_node -> left = target_node -> right -> left;
-		target_node -> right = target_node -> right -> right;
-		free(save);
 
 	} else {
-		node_t *heir = successor(target_node);
-		int value=heir->value;
-		if(delete(root,value))
-			target_node->value=value;
-	}
+		// the target node without any child
+		if(target_node -> left == NULL && target_node -> right == NULL)	{
 
+			// If the target node is root
+			if(target_node == *node){
+				free(target_node);
+
+			}else{
+				// If the target node is the left child
+				if( target_node -> parent -> left == target_node)
+					parent->left=NULL;
+
+				// If the target node is the right child
+				if( target_node -> parent -> right == target_node)
+					parent->right=NULL;
+
+				free(target_node );
+			}
+
+		// If the target node only has left child
+		} else if(target_node -> left != NULL && target_node -> right == NULL) {
+
+			node_t *save = target_node ->left;
+			target_node -> value = target_node -> left-> value;
+			target_node -> right = target_node -> left-> right;
+			target_node -> left = target_node -> left-> left;
+			free(save);
+
+		// If the target node only has right child
+		} else if(target_node -> right != NULL && target_node -> left == NULL) {
+
+			node_t * save = target_node->right;
+			target_node -> value = target_node -> right -> value;
+			target_node -> left = target_node -> right -> left;
+			target_node -> right = target_node -> right -> right;
+			free(save);
+
+		// The target node has two children
+		}else{
+			node_t * heir = node_successor(target_node);
+			int value = heir -> value;
+			if(node_remove_node(node, value))
+				target_node -> value = value;
+		}
+	}
 	return 1;
 }
-
-
-
-
-
-
-
-
-
-
-
-def binary_tree_delete(self, value):
-    if value < self.value:
-        self.left_child.binary_tree_delete(value)
-    elif value > self.value:
-        self.right_child.binary_tree_delete(value)
-    else: # delete the value here
-        if self.left_child and self.right_child: # if both children are present
-            successor = self.right_child.find_min()
-            self.value = successor.value
-            successor.binary_tree_delete(successor.value)
-        elif self.left_child:   # if the node has only a *left* child
-            self.replace_node_in_parent(self.left_child)
-        elif self.right_child:  # if the node has only a *right* child
-            self.replace_node_in_parent(self.right_child)
-        else: # this node has no children
-            self.replace_node_in_parent(None)
 
 
 
@@ -614,7 +461,7 @@ tree_t *tree_remove_node(tree_t *tree, int input_value)
 }
 
 
-// ==================operation==================
+// ================== operation ==================
 // To check the value is contained in a hierarchy of a node.
 node_t *is_node_contain_value(node_t *node, int iuput_value)
 {
