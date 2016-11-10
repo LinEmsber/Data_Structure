@@ -3,7 +3,7 @@
 The practicing about linux kernel module or driver.
 
 References:
-        Linux Device Driver 3rd
-        http://lwn.net/
-        http://free-electrons.com/
-        http://lxr.free-electrons.com/
+        - a. Linux Device Driver 3rd
+        - b. http://lwn.net/
+        - c. http://free-electrons.com/
+        - d. http://lxr.free-electrons.com/
