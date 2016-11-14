@@ -13,10 +13,8 @@
 
 #include <asm/uaccess.h>                // copy_to_user(), copy_from_user()
 
-/*
- * hello_read() is the function called when a process calls read() on /dev/hello.
- * It writes "Hello, world!" to the buffer passed in the read() call.
- */
+// hello_read() is the function called when a process calls read() on /dev/hello.
+// It writes "Hello, world!" to the buffer passed in the read() call.
 static ssize_t hello_read(struct file * file, char * buf, size_t count, loff_t *ppos)
 {
 	char *hello_str = "Hello, world!\n";
@@ -86,5 +84,6 @@ module_init(hello_init);
 module_exit(hello_exit);
 
 MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Lin Emsber");
 MODULE_DESCRIPTION("Hello, world!\n");
 MODULE_VERSION("dev");
