@@ -588,22 +588,22 @@ tree_t *is_tree_contain_value(tree_t *tree, int iuput_value)
 	return is_node_contain_value(current, input_value);
 }
 
-// Compute the height of a tree, the number of nodes along the longest path
+// Compute the level(height) of a tree, the number of nodes along the longest path
 // from the root node down to the farthest leaf node.
-int node_height(node_t* node)
+int node_level(node_t* node)
 {
 	if (node == NULL){
 		return 0;
 	}else{
 		// compute the height of each subtree
-		int lheight = tree_height(node->left);
-		int rheight = tree_height(node->right);
+		int lheight = node_level(node->left);
+		int rheight = node_level(node->right);
 
 		// use the larger one
 		if (lheight > rheight){
-			return(lheight+1);
+			return lheight + 1;
 		}else{
-			return(rheight+1);
+			return rheight + 1;
 		}
 	}
 }
