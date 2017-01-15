@@ -45,7 +45,7 @@ void hash_destroy(hash_table_t * hash_table)
  * @key: the key
  * @value: the value
  */
-void hash_set_node(hash_table_t * hash_table, int key, int value)
+void hash_set_node(hash_table_t * hash_table, int key, void * data)
 {
 	hash_node_t * node;
 	int hash = abs(key) % hash_table->size;
@@ -62,7 +62,7 @@ void hash_set_node(hash_table_t * hash_table, int key, int value)
 
 	node = malloc ( sizeof(hash_node_t) );
 	node->key = key;
-	node->val = value;
+	node->data = data;
 
 	hash_table->storage[hash] = node;
 }

@@ -5,13 +5,13 @@
  */
 
 #include <stdio.h>
-#include <stdlbi.h>
+#include <stdlib.h>
 
 // ===== structure and typedef =====
 typedef struct hash_node hash_node_t;
 struct hash_node {
 	int key;
-	int val;
+	void * data;
 };
 
 typedef struct hash_table hash_table_t;
@@ -24,5 +24,6 @@ struct hash_table {
 // ===== declaration =====
 hash_table_t * hash_create(int size);
 void hash_destroy(hash_table_t * hash_table);
-void hash_set_node(hash_table_t * hash_table, int key, int value);
+
+void hash_set_node(hash_table_t * hash_table, int key, void * data);
 hash_node_t * hash_get_node(hash_table_t * hash_table, int key);
