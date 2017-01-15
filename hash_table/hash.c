@@ -27,7 +27,8 @@ hash_table_t * hash_create(int size)
  */
 void hash_destroy(hash_table_t * hash_table)
 {
-	for(int i; i < hash_table->size; i++) {
+	int i;
+	for(i = 0; i < hash_table->size; i++) {
 
 		hash_node_t * node;
 		if((node = hash_table->storage[i])) {
