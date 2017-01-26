@@ -6,7 +6,7 @@
 
 bool detect_null(unsigned int x)
 {
-	return ( (x - 0x01010101) & ~x & 0x80808080 ) != 0;
+	return ( (x - 0x01010101) & ~(x) & 0x80808080 ) != 0;
 }
 
 
@@ -16,9 +16,10 @@ bool detect_null(unsigned int x)
 // To improve performance many bytes are examined in parallel.
 //
 // Since C language use two's complement. The negtive of number n equal (~n)+1, even n is zero.
+// Meanwhile, 0x80 equal 128 in decimal, as well as 1000 0000 in binary.
 //
-// -n = (~n) + 1
-// -n - 1 = (~n)
+// 	-n = (~n) + 1
+// 	-n - 1 = (~n)
 //
 // 	Decimal		Two's complement
 // 	--------	--------
@@ -31,17 +32,44 @@ bool detect_null(unsigned int x)
 // 	−127 		1000 0001
 // 	−128 		1000 0000
 //
+// example 1:
 //
-// Meanwhile, 0x80 equal 128 in decimal, as well as 1000 0000 in binary.
-// Thus, only if X is 0x00, 0- 0x01 & ~(0) & 0x80 != 0
+// If x is 0:
 //
-// example:
-// 	if X = 64,
+// (x - 0x01) & ~(x) & 0x80
 //
-// 	0100 0000 - 1 = 0011 1111
-// 	~(0100 0000) = 1011 1111
-// 	(0100 0000 - 1) && ~(0100 0000) = 0011 1111
-// 	0011 1111 & 1000 0000 = 0
+// calculate in hexadecimal:
+// = (0x00 - 0x01) & ~(0x00) & 0x80
+// = 0xff & 0xff & 0x80
+// = 0xff & 0x80
+// = 0x80
+// != 0
+//
+// calcuate in decimal:
+// (0000 0000 - 0000 0001) & ~(0000 0000) & ( 1000 0000)
+// = (1111 1111) & (1111 1111) & ( 1000 0000)
+// = (1111 1111) & (1000 0000)
+// = (1000 0000)
+//
+//
+// example 2:
+//
+// If x is 64 in decimal, and it is 0100 0000 in binary, and 0x40 in hexadecimal.
+//
+// (x - 0x01) & ~(x) & 0x80
+//
+// calculate in hexadecimal:
+// = (0x40 - 0x01) & ~(0x40) & 0x80
+// = 0x3f & 0xbf & 0x80
+// = 0x3f & 0x80
+// = 0
+//
+// calcuate in decimal:
+//
+// (0100 0000 - 1) & ~(0100 0000) & (1000 0000)
+// = (0011 0000) & (1011 1111) & (1000 0000)
+// = (0011 0000) & (1000 0000)
+// = (0000 0000)
 //
 //
 // explanation 2:
