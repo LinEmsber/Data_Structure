@@ -10,10 +10,15 @@
 
 
 // ========== functions ==========
+
+/* create a memory pool table
+ *
+ *
+ */
 mp_table_t *mp_create (size_t size)
 {
 	// check does the size is too large induce overflow or not
-	size = mpool_decide_create_siz(size);
+	size = mp_decide_create_siz(size);
 
 	// create a mp_table
 	mp_table_t * mp = (mp_table_t *) malloc ( sizeof(mp_table_t) );
@@ -35,4 +40,19 @@ mp_table_t *mp_create (size_t size)
 	mp->msiz  = size;
 
 	return mp;
+}
+
+
+/* align byte boundary
+ */
+size_t mp_align(size_t siz)
+{
+	return (siz + (MP_ALIGN_SIZE - 1)) & ~(MP_ALIGN_SIZE - 1);
+}
+
+/* decide mp_entry size
+ */
+size_t mp_decide_create_siz(size_t siz)
+{
+	return siz <= 0 ? MP_POOL_SIZ : mp_align(siz);
 }

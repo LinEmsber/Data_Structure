@@ -13,8 +13,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define mp_POOL_SIZ   (1024 * 1024)
-#define mp_ALIGN_SIZE (8)
+#define MP_POOL_SIZ   (1024 * 1024)
+#define MP_ALIGN_SIZE (8)
 
 // ========== free ==========
 void _safe_free(void **pp)
@@ -28,7 +28,7 @@ void _safe_free(void **pp)
 #define SAFE_FREE(p) _safe_free( (void**) &p )
 
 // ========== check NULL ==========
-#define CHECK_NULL(p) if ( p == NULL) {return NULL;}
+#define CHECK_NULL(p) if ( !p ) {return NULL;}
 
 
 // ========== typedef ==========
@@ -37,8 +37,8 @@ typedef struct mp_table mp_table_t;
 
 // ========== strutcture ==========
 struct mp_entry {
-	void * pool;     		// memory pool
-	struct mp_entry * next;		// point to the next memory pool
+	void * pool;     			// memory pool
+	struct mp_entry * next;			// point to the next memory pool
 };
 
 struct mp_table {
