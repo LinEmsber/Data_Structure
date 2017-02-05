@@ -10,11 +10,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 
-#define MP_POOL_SIZ   (1024 * 1024)
-#define MP_ALIGN_SIZE (8)
+#define MEM_POOL_SIZE   (1024 * 1024)
+#define MEM_POOL_ALIGN_SIZE 8
 
 // ========== free ==========
 void _safe_free(void **pp)
@@ -27,31 +28,30 @@ void _safe_free(void **pp)
 
 #define SAFE_FREE(p) _safe_free( (void**) &p )
 
-// ========== check NULL ==========
-#define CHECK_NULL(p) if ( !p ) {return NULL;}
-
 
 // ========== typedef ==========
-typedef struct mp_entry mp_entry_t;
-typedef struct mp_table mp_table_t;
+typedef struct mem_block mem_block_t;
+typedef struct mem_pool mem_pool_t;
+
 
 // ========== strutcture ==========
-struct mp_entry {
+struct mem_block {
 	void * pool;     			// memory pool
-	struct mp_entry * next;			// point to the next memory pool
+	uint32_t block_size			// size of block
+	struct mem_block * next;		// point to the next memory pool
+	uint8_t is_block_start;			// this block is the starting block or not
 };
 
-struct mp_table {
-	struct mp_entry * head; 		// the head of memory pool
-	void * begin; 				// data for internal conduct
-	size_t max_size; 			// max pool size of current pool
-	size_t used_size;			// used pool size of current pool
-	struct mp_entry * mp; 			// the memory pool entry which this table point to currently
+struct mem_pool {
+	uint32_t block_size;			// total memory pool size
+	uint32_t block_count;			// the nubmer of memory pool's block
+
+	void * start;				// memroy start
+	void * end;				// memory end
+	struct mem_pool * next;			// the next memory pool
 };
 
 // ========== functions ==========
-mp_table_t *mp_table_create (size_t size);
-void *mp_table_alloc(mp_table_t *pool, size_t size);
-void mp_table_destroy (mp_table_t *pool);
+
 
 #endif

@@ -11,48 +11,56 @@
 
 // ========== functions ==========
 
-/* create a memory pool table
+
+/* create a memory pool which has block_count number of block, and each of block's size is block_size
  *
- *
+ * @block_size: the size of one block
+ * @block_count: the number of block
  */
-mp_table_t *mp_create (size_t size)
+mem_pool_t *mem_pool_create (uint32_t block_size, uint32_t block_count)
 {
-	// check does the size is too large induce overflow or not
-	size = mp_decide_create_siz(size);
 
-	// create a mp_table
-	mp_table_t * mp = (mp_table_t *) malloc ( sizeof(mp_table_t) );
-	CHECK_NULL(mp);
+	// create a mem_pool
+	mem_pool_t * mp;
+	mp = malloc ( sizeof( *mp ) );
+	if( !mp )
+		return NULL;
 
-	// create a mp_entry for mp_table
-	mp->mp = (mp_entry_t *) malloc ( sizeof(mp_entry_t) );
-	CHECK_NULL(mp->mp)
+	// allocate a space
+	void * space = malloc(block_count * block_size);
+	if ( !space ){
+		free(mp);
+		return NULL;
+	}
 
-	// allocate specific size of memory for this mp_entry
-	mp->mp->pool = malloc(size);
-	CHECK_NULL(mp->mp->pool);
-	mp->mp->next = NULL;
+	// set the pool's space
+	pool->start = space;
+	pool->end = space + (block_count * block_size);
 
-	// initialize this mp_table
-	mp->begin = mp->mp->pool;
-	mp->head  = mp->mp;
-	mp->usiz  = 0;
-	mp->msiz  = size;
+        pool->block_size = block_size;
+        pool->block_count = block_count;
+        pool->next = 0;
 
-	return mp;
+	// create free blocks
+        while (space < pool->end){
+                space += block_size;
+                _alloc_block();
+        }
+
+        return mp;
 }
 
 
 /* align byte boundary
  */
-size_t mp_align(size_t siz)
+uint32_t mem_pool_align(uint32_t size)
 {
-	return (siz + (MP_ALIGN_SIZE - 1)) & ~(MP_ALIGN_SIZE - 1);
+	return (size + (MEM_POOL_ALIGN_SIZE - 1)) & ~(MEM_POOL_ALIGN_SIZE - 1);
 }
 
 /* decide mp_entry size
  */
-size_t mp_decide_create_siz(size_t siz)
+uint32_t mem_pool_check_size(uint32_t size)
 {
-	return siz <= 0 ? MP_POOL_SIZ : mp_align(siz);
+	return size <= 0 ? MEM_POOL_SIZE : mem_pool_align(size);
 }
