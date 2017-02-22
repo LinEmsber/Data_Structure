@@ -14,6 +14,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "types.h"
+
 #define MEM_POOL_SIZE   (1024 * 1024)
 #define MEM_POOL_ALIGN_SIZE 8
 
@@ -36,18 +38,20 @@ typedef struct mem_pool mem_pool_t;
 
 // ========== strutcture ==========
 struct mem_block {
-	void * pool;     			// memory pool
-	uint32_t block_size			// size of block
+	uint8_t * mem_block_start;     		// the memory block start
+	uint8_t * mem_block_end;     		// the memory block end
+
+	uint32_t block_size;			// size of block
 	struct mem_block * next;		// point to the next memory pool
-	uint8_t is_block_start;			// this block is the starting block or not
 };
 
 struct mem_pool {
 	uint32_t block_size;			// total memory pool size
 	uint32_t block_count;			// the nubmer of memory pool's block
 
-	void * start;				// memroy start
-	void * end;				// memory end
+	uint8_t * start;			// the memroy start
+	uint8_t * end;				// the memory end
+	uint8_t * current;			// the memroy current position
 	struct mem_pool * next;			// the next memory pool
 };
 
