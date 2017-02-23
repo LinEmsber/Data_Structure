@@ -59,7 +59,12 @@ mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 	// assign memory for this block
 	mb->mem_block_start = mp->current;
 	mb->mem_block_end = mp->current + size;
+	mb->block_size = size;
+	mb->next =
+
+	// update status of mp
 	mp->current = mp->current + size;
+	mp->current_block = mb;
 
 	// check
 }

@@ -42,7 +42,7 @@ struct mem_block {
 	uint8_t * mem_block_end;     		// the memory block end
 
 	uint32_t block_size;			// size of block
-	struct mem_block * next;		// point to the next memory pool
+	struct mem_block * next;		// point to the next memory block
 };
 
 struct mem_pool {
@@ -52,7 +52,8 @@ struct mem_pool {
 	uint8_t * start;			// the memroy start
 	uint8_t * end;				// the memory end
 	uint8_t * current;			// the memroy current position
-	struct mem_pool * next;			// the next memory pool
+
+	struct mem_block * current_block;	// the current mem_block
 };
 
 // ========== functions ==========
