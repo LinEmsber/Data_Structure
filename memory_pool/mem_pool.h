@@ -41,6 +41,8 @@ struct mem_block {
 	uint8_t * mem_block_start;     		// the memory block start
 	uint8_t * mem_block_end;     		// the memory block end
 
+	uint8_t * is_start_block;		// Is this block is the start block in memory pool?
+
 	uint32_t block_size;			// size of block
 	struct mem_block * next;		// point to the next memory block
 };
@@ -53,6 +55,7 @@ struct mem_pool {
 	uint8_t * end;				// the memory end
 	uint8_t * current;			// the memroy current position
 
+	struct mem_block * start_block;
 	struct mem_block * current_block;	// the current mem_block
 };
 
