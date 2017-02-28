@@ -66,14 +66,39 @@ mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 	// assign memory for this block
 	mb->mem_block_start = mp->current;
 	mb->mem_block_end = mp->current + size;
+
 	mb->block_size = size;
-	mb->next =
+	mb->next = mp->current_block;
 
 	// update status of mp
 	mp->current = mp->current + size;
 	mp->current_block = mb;
 
-	// check
+	// TODO: should we need to check size?
+	if (mp->start_block = NULL)
+		mb->is_start_block == 1;
+
+	return mp;
+}
+
+mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
+{
+
+	// add member start_mb in mem_pool_t or using contaner_of()
+
+	mem_block_t ** mb_tmp;
+
+	mp_tmp = mp->start_block;
+
+	while ( mp_tmp != NULL){
+
+		if (mp_tmp == mb)
+			break;
+
+		mp_tmp = mp_tmp->next;
+	}
+
+
 }
 
 
