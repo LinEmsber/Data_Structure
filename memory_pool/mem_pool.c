@@ -36,13 +36,16 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 		return NULL;
 	}
 
-	// set the pool's space
+	// set the pool's setting
+	mp->block_size = block_size;
+	mp->block_count = block_count;
+
 	mp->start = space;
 	mp->end = space + (block_count * block_size);
 	mp->current = space;
 
-	mp->block_size = block_size;
-	mp->block_count = block_count;
+	mp->remaing_size = block_size * block_count;
+
 	mp->next = 0;
 
 	return mp;
@@ -50,6 +53,10 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 
 mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 {
+	// check mem pool size is enough or not
+	if (mp->remaing_size < size)
+		return NULL;
+
 	// create a mem_block
 	mem_block_t * mb;
 	mb = malloc ( sizeof ( *mb ) );

@@ -53,6 +53,8 @@ struct mem_pool {
 	uint8_t * end;				// the memory end
 	uint8_t * current;			// the memroy current position
 
+	uint8_t remaing_size;			// the remaing memory of memory pool
+
 	struct mem_block * current_block;	// the current mem_block
 };
 
