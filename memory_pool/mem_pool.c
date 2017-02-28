@@ -46,7 +46,7 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 
 	mp->remaing_size = block_size * block_count;
 
-	mp->next = 0;
+	mp->current_block = NULL;
 
 	return mp;
 }
