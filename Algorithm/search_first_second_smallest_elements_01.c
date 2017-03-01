@@ -40,31 +40,39 @@ void first_second(int x[], int n, int *first, int *second)
  */
 void f_and_s(int x[], int start, int end, int *f, int *s)
 {
-	int  mid;
-	int  F1, F2;             /* returned smallest items  */
-	int  S1, S2;             /* returned second smallest */
+        int  mid;
+        int  F1, F2;             /* returned smallest items  */
+        int  S1, S2;             /* returned second smallest */
 
-	// If range empty, return INT_MAX.
-	if (start > end){
-		*f = *s = INT_MAX;
+        // If range empty, return INT_MAX.
+        if (start > end){
+                *f = *s = INT_MAX;
 
-	// If exactly one element, return INT_MAX.
-	}else if (start == end){
-		*f = x[start], *s = INT_MAX;
+        // If exactly one element, return INT_MAX.
+        }else if (start == end){
+                *f = x[start];
+                *s = INT_MAX;
 
-	}else {
-		// cut from middle
-		mid = (start + end) / 2;
+        }else {
+                // cut from middle
+                mid = (start + end) / 2;
 
-		f_and_s(x, start, mid, &F1, &S1);
-		f_and_s(x, mid+1, end, &F2, &S2);
+		// search from the first half part and second half part
+                f_and_s(x, start, mid, &F1, &S1);
+                f_and_s(x, mid+1, end, &F2, &S2);
 
-		// pick 1st and 2nd items.
-		if (F1 < F2)
-			*f = F1, *s = (S1 < F2) ? S1 : F2;
-		else
-			*f = F2, *s = (S2 < F1) ? S2 : F1;
-	}
+                // pick 1st and 2nd smallest elements from the array.
+		
+		// the smallest element of first half part is smaller than the smallest element of second half part.
+                if (F1 < F2){
+                        *f = F1;
+			// compare the second smallest elements of both hlaf part.
+                        *s = (S1 < F2) ? S1 : F2;
+                }else{
+                        *f = F2;
+                        *s = (S2 < F1) ? S2 : F1;
+                }
+        }
 }
 
 
