@@ -78,8 +78,10 @@ mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 
 	// If this mem_block_t, mb, is the start block of this mem_pool_t, mp.
 	if (mp->start_block = NULL){
-		mb->is_start_block == 1;
+		mb->is_start_block = 1;
 		mp->start_block = mb;
+	}else{
+		mb->is_start_block = 0;
 	}
 
 	return mp;
@@ -87,22 +89,34 @@ mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 
 mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
 {
+	mem_block_t * target_mb = mb;
 
-	// add member start_mb in mem_pool_t or using contaner_of()
+	// find the target mem_block_t from the mem_pool_t first.
+	mem_block_t ** mb_tmp = &mp->start_block;
 
-	mem_block_t ** mb_tmp;
+	while ( *mp_tmp != NULL){
 
-	mp_tmp = mp->start_block;
-
-	while ( mp_tmp != NULL){
-
-		if (mp_tmp == mb)
+		if (*mp_tmp == target_mb){
+			mp_tmp = &(*target_mb)->next;
 			break;
+		}
 
 		mp_tmp = mp_tmp->next;
 	}
 
 
+	// update the status of mem_pool_t
+	mp->remaing_size -= mb->block_size
+	if (target_mb->is_start_block == 1)
+		mp->start_block = mp->start_block->next;
+
+	if (mp->current_block == target_mb)
+		mp->current_block = mp->current_block->next;
+
+	// free the target mem_block_t
+	SAFE_FREE(target_mb);
+
+	return mp;
 }
 
 
