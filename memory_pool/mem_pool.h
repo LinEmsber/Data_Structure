@@ -19,6 +19,8 @@
 #define MEM_POOL_SIZE   (1024 * 1024)
 #define MEM_POOL_ALIGN_SIZE 8
 
+// TODO: add data_alignment()
+
 // ========== free ==========
 void _safe_free(void **pp)
 {
@@ -48,17 +50,20 @@ struct mem_block {
 };
 
 struct mem_pool {
-	uint32_t block_size;			// total memory pool size
+
+	// elements would not be changed after mem_pool_t be created.
+	uint32_t block_size;			// the basic block size
 	uint32_t block_count;			// the nubmer of memory pool's block
 
 	uint8_t * start;			// the memroy start
 	uint8_t * end;				// the memory end
+
+	// elements would be changed according to the use situation.
 	uint8_t * current;			// the memroy current position
-
 	uint8_t remaing_size;			// the remaing memory of memory pool
-
 	struct mem_block * start_block;		// the start block of mem_pool_t
 	struct mem_block * current_block;	// the current block of mem_pool_t
+
 };
 
 // ========== functions ==========

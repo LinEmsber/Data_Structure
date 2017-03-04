@@ -42,14 +42,15 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 
 	mp->start = space;
 	mp->end = space + (block_count * block_size);
+
 	mp->current = space;
-
 	mp->remaing_size = block_size * block_count;
-
+	mp->start_block = NULL;
 	mp->current_block = NULL;
 
 	return mp;
 }
+
 
 mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 {
@@ -63,20 +64,23 @@ mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 	if ( !mb )
 		return NULL;
 
-	// assign memory for this block
+	// assign memory for this mem_block_t, mb
 	mb->mem_block_start = mp->current;
 	mb->mem_block_end = mp->current + size;
 
 	mb->block_size = size;
 	mb->next = mp->current_block;
 
-	// update status of mp
+	// update status of mem_pool_t, mp
 	mp->current = mp->current + size;
+	mp->remaing_size -= size;
 	mp->current_block = mb;
 
-	// TODO: should we need to check size?
-	if (mp->start_block = NULL)
+	// If this mem_block_t, mb, is the start block of this mem_pool_t, mp.
+	if (mp->start_block = NULL){
 		mb->is_start_block == 1;
+		mp->start_block = mb;
+	}
 
 	return mp;
 }
