@@ -8,11 +8,8 @@
 #include <stdlib.h>
 
 #include "mem_pool.h"
-
-// ========== private functions ==========
-
-
-// ========== functions ==========
+#include "types.h"
+#include "generic.h"
 
 
 /* create a memory pool which has block_count number of block, and each of block's size is block_size
@@ -73,7 +70,7 @@ mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 
 	// update status of mem_pool_t, mp
 	mp->current = mp->current + size;
-	mp->remaing_size -= size;
+	mp->remaing_size = mp->remaing_size - size;
 	mp->current_block = mb;
 
 	// If this mem_block_t, mb, is the start block of this mem_pool_t, mp.
@@ -92,21 +89,22 @@ mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
 	mem_block_t * target_mb = mb;
 
 	// find the target mem_block_t from the mem_pool_t first.
-	mem_block_t ** mb_tmp = &mp->start_block;
+	mem_block_t ** mb_tmp = &(mp->start_block);
 
-	while ( *mp_tmp != NULL){
+	// TODO: fix bug
+	while ( *mb_tmp != NULL){
 
-		if (*mp_tmp == target_mb){
-			mp_tmp = &(*target_mb)->next;
+		if (*mb_tmp == target_mb){
+			*mb_tmp = (target_mb)->next;
 			break;
 		}
 
-		mp_tmp = mp_tmp->next;
+		*mb_tmp = &(*mb_tmp)->next;
 	}
 
 
 	// update the status of mem_pool_t
-	mp->remaing_size -= mb->block_size
+	mp->remaing_size -= mb->block_size;
 	if (target_mb->is_start_block == 1)
 		mp->start_block = mp->start_block->next;
 
@@ -117,19 +115,4 @@ mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
 	SAFE_FREE(target_mb);
 
 	return mp;
-}
-
-
-/* align byte boundary
- */
-uint32_t mem_pool_align(uint32_t size)
-{
-	return (size + (MEM_POOL_ALIGN_SIZE - 1)) & ~(MEM_POOL_ALIGN_SIZE - 1);
-}
-
-/* decide mp_entry size
- */
-uint32_t mem_pool_check_size(uint32_t size)
-{
-	return size <= 0 ? MEM_POOL_SIZE : mem_pool_align(size);
 }
