@@ -1,16 +1,22 @@
+# name of executable
+NAME = main
+
+# compiler to use
 CC ?= gcc
-CFLAGS_common ?= -Wall -std=gnu99
+
+# compiler flags and options
+CFLAGS_common = -Wall -std=gnu99
 CFLAGS_opt  = -O0
 
-SRCS_common = main.c
+# source files
+SRCS = main.c
+SRCS_LIB = mem_pool.c
 
-EXEC = main 
+# run the compilation
+$(NAME): $(SRCS_LIB)
+	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(SRCS_LIB) $@.c -o $@
 
-
-main: $(SRCS_common) mem_pool.c mem_pool.h
-	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
-	 	-o $@ $(SRCS_common) $@.c
-
+# clean 
 .PHONY: clean
 clean:
-	$(RM) $(EXEC) *.o 
+	$(RM) $(EXEC) *.o
