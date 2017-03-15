@@ -40,7 +40,7 @@ typedef struct mem_pool {
 
 	// elements would be changed according to the use situation.
 	uint8_t * current;			// the memroy current position
-	uint8_t remaing_size;			// the remaing memory of memory pool
+	uint32_t remaing_size;			// the remaing memory of memory pool
 	struct mem_block * start_block;		// the start block of mem_pool_t
 	struct mem_block * current_block;	// the current block of mem_pool_t
 
@@ -48,8 +48,9 @@ typedef struct mem_pool {
 
 
 mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count);
-mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size);
+mem_block_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size);
 mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb);
+mem_pool_t * mem_pool_free(mem_pool_t *mp);
 
 
 #endif

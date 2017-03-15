@@ -1,5 +1,5 @@
-# name of executable
-NAME = main
+# EXEC of executable
+EXEC = main
 
 # compiler to use
 CC ?= gcc
@@ -12,11 +12,14 @@ CFLAGS_opt  = -O0
 SRCS = main.c
 SRCS_LIB = mem_pool.c
 
+.PHONY: all
+all: $(EXEC)
+
 # run the compilation
-$(NAME): $(SRCS_LIB)
+$(EXEC): $(SRCS_LIB)
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(SRCS_LIB) $@.c -o $@
 
-# clean 
+# clean
 .PHONY: clean
 clean:
 	$(RM) $(EXEC) *.o

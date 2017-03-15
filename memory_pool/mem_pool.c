@@ -19,6 +19,7 @@
  */
 mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 {
+	int total_size = block_size * block_count;
 
 	// create a mem_pool
 	mem_pool_t * mp;
@@ -27,7 +28,8 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 		return NULL;
 
 	// allocate a space
-	void * space = malloc(block_count * block_size);
+	// uint8_t * space = malloc(block_count * block_size);
+	void * space = malloc(total_size);
 	if ( !space ){
 		free(mp);
 		return NULL;
@@ -38,10 +40,11 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 	mp->block_count = block_count;
 
 	mp->start = space;
-	mp->end = space + (block_count * block_size);
+	mp->end = space + (total_size);
 
 	mp->current = space;
-	mp->remaing_size = block_size * block_count;
+
+	mp->remaing_size = total_size;
 	mp->start_block = NULL;
 	mp->current_block = NULL;
 
@@ -49,7 +52,7 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 }
 
 
-mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
+mem_block_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 {
 	// check mem pool size is enough or not
 	if (mp->remaing_size < size)
@@ -81,7 +84,7 @@ mem_pool_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 		mb->is_start_block = 0;
 	}
 
-	return mp;
+	return mb;
 }
 
 mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
@@ -113,6 +116,20 @@ mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
 
 	// free the target mem_block_t
 	SAFE_FREE(target_mb);
+
+	return mp;
+}
+
+
+mem_pool_t * mem_pool_free(mem_pool_t *mp)
+{
+	// free memory pool
+	free(mp->start);
+
+	//
+	free(mp);
+
+	mp = NULL;
 
 	return mp;
 }
