@@ -48,8 +48,8 @@ typedef struct mem_pool {
 
 
 mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count);
-mem_block_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size);
-mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb);
+mem_block_t * mem_pool_assign_block (mem_pool_t * mp, uint32_t size);
+mem_pool_t * mem_pool_retrieve_block (mem_pool_t * mp, mem_block_t * mb);
 mem_pool_t * mem_pool_free(mem_pool_t *mp);
 
 

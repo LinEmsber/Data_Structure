@@ -52,7 +52,7 @@ mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count)
 }
 
 
-mem_block_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
+mem_block_t * mem_pool_assign_block (mem_pool_t * mp, uint32_t size)
 {
 	// check mem pool size is enough or not
 	if (mp->remaing_size < size)
@@ -77,7 +77,7 @@ mem_block_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 	mp->current_block = mb;
 
 	// If this mem_block_t, mb, is the start block of this mem_pool_t, mp.
-	if (mp->start_block = NULL){
+	if (mp->start_block == NULL){
 		mb->is_start_block = 1;
 		mp->start_block = mb;
 	}else{
@@ -87,14 +87,13 @@ mem_block_t * mem_pool_add_block (mem_pool_t * mp, uint32_t size)
 	return mb;
 }
 
-mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
+mem_pool_t * mem_pool_retrieve_block (mem_pool_t * mp, mem_block_t * mb)
 {
 	mem_block_t * target_mb = mb;
 
 	// find the target mem_block_t from the mem_pool_t first.
 	mem_block_t ** mb_tmp = &(mp->start_block);
 
-	// TODO: fix bug
 	while ( *mb_tmp != NULL){
 
 		if (*mb_tmp == target_mb){
@@ -102,7 +101,7 @@ mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
 			break;
 		}
 
-		*mb_tmp = &(*mb_tmp)->next;
+		*mb_tmp = (*mb_tmp)->next;
 	}
 
 
@@ -114,7 +113,7 @@ mem_pool_t * mem_pool_remove_block (mem_pool_t * mp, mem_block_t * mb)
 	if (mp->current_block == target_mb)
 		mp->current_block = mp->current_block->next;
 
-	// free the target mem_block_t
+	// free the target mem_block_t, but not free space
 	SAFE_FREE(target_mb);
 
 	return mp;
