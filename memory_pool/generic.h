@@ -4,39 +4,31 @@
  * Create Date: 2017, Mar, 14
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "mem_pool.h"
+
 
 #ifndef GENERIC_H
 #define GENERIC_H
 
 
-
-// TODO: add data_alignment()
-
-
-// ========== free ==========
-void _safe_free(void **pp)
-{
-	if (pp != NULL && *pp != NULL){
-		free(*pp);
-		*pp = NULL;
-	}
-}
-
 #define SAFE_FREE(p) _safe_free( (void**) &p )
 
+/* A safty way to free memroy */
+void _safe_free(void **pp);
 
-/* align byte boundary
- */
-uint32_t size_align(uint32_t size)
-{
-	return (size + (MEM_POOL_ALIGN_SIZE - 1)) & ~(MEM_POOL_ALIGN_SIZE - 1);
-}
+/* print structure mem_pool_t for debug */
+void print_mem_pool( mem_pool_t * mp );
 
-/* decide mp_entry size
- */
-uint32_t size_check(uint32_t size)
-{
-	return size <= 0 ? MEM_POOL_SIZE : size_align(size);
-}
+/* print structure mem_block_t for debug */
+void print_mem_block( mem_block_t * mb );
+
+
+/* align byte boundary */
+uint32_t size_align(uint32_t size);
+
+/* decide mp_entry size */
+uint32_t size_check(uint32_t size);
 
 #endif
