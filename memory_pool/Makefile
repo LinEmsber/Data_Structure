@@ -10,7 +10,7 @@ CFLAGS_opt  = -O0
 
 # source files
 SRCS = main.c
-SRCS_LIB = mem_pool.c
+SRCS_LIB = mem_pool.c generic.c
 
 .PHONY: all
 all: $(EXEC)
