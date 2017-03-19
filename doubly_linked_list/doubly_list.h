@@ -11,8 +11,8 @@
 #define DOUBLY_LIST_H
 
 // ========== typedef ==========
-typedef struct node node_t
-typedef struct list list_t
+typedef struct node node_t;
+typedef struct list list_t;
 
 typedef void (*free_cb_t) (void*);
 
@@ -40,7 +40,7 @@ list_t * list_create();
 void list_free(list_t *list);
 int list_count(list_t *list);
 void list_free_node(list_t *list);
-int * list_head_add_node(list_t *list, node_t *node);
+int list_head_add_node(list_t *list, node_t *node);
 node_t *list_head_pop_node(list_t *list);
 
 #endif
