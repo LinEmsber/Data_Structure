@@ -9,9 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "doubly_list"
+#include "doubly_list.h"
 #include "generic.h"
-#include "types.h"
 
 
 int main()
@@ -22,9 +21,9 @@ int main()
         node_t * n2 = node_create(30);
         node_t * n3 = node_create(50);
 
-        list_head_add_node(list_entry, n1)
-        list_head_add_node(list_entry, n2)
-        list_head_add_node(list_entry, n3)
+        list_head_add_node(list_entry, n1);
+        list_head_add_node(list_entry, n2);
+        list_head_add_node(list_entry, n3);
 
 	return 0;
 }
