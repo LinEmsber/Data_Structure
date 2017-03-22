@@ -22,6 +22,8 @@ int main()
 	mem_block_t *p_1;
 	mem_block_t *p_2;
 
+	// TODO: use this memory pool to implement a signly linked list.
+
 	mp_entry = mem_pool_create(32, 128);
 	print_mem_pool(mp_entry);
 

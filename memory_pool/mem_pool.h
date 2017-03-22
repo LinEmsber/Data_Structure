@@ -1,5 +1,5 @@
 /* A memory pool
- * File: mp.h
+ * File: mem_pool.h
  * Author: Lin Emsber
  * Create Date: 2017, Jan, 31
  */
