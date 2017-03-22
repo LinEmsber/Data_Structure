@@ -1,17 +1,15 @@
-/* singly linked list */
+/* A doubly linked list
+ * File: singly_linked_list.c
+ * Author: Lin Emsber
+ * Create Date: 2017, May, 22
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct node node_t;
-
-struct node{
-	int val;
-	struct node * next;
-};
 
 /* create a node */
-node_t * node_t_create(int val)
+node_t * node_create(int val)
 {
 	node_t * n;
 
@@ -94,42 +92,6 @@ int print_list(node_t * head)
 		printf("%d\n", current->val);
                 current = current -> next;
 	}
-
-	return 0;
-}
-
-
-
-
-int main()
-{
-	int ret = 0;
-
-	node_t * start = node_t_create(0);
-	node_t * e1 = node_t_create(10);
-	node_t * e2 = node_t_create(30);
-        node_t * e3 = node_t_create(50);
-        node_t * e4 = node_t_create(20);
-        node_t * e5 = node_t_create(40);
-
-	ret = node_add( start, e1 );
-	ret = node_add( start, e2 );
-        ret = node_add( start, e3 );
-        ret = node_add( start, e4 );
-        ret = node_add( start, e5 );
-
-        ret = print_list( start );
-
-        ret = node_remove( start, 30);
-        ret = node_remove( start, 10);
-
-        printf("ret: %d\n", ret);
-
-        ret = print_list( start );
-        printf("ret: %d\n", ret);
-
-	ret = node_free(start);
-        printf("ret: %d\n", ret);
 
 	return 0;
 }
