@@ -19,6 +19,10 @@ all: $(EXEC)
 $(EXEC): $(SRCS_LIB)
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(SRCS_LIB) $@.c -o $@
 
+.PHONY: test
+run: $(EXEC)
+	valgrind --leak-check=yes ./main
+
 # clean
 .PHONY: clean
 clean:
