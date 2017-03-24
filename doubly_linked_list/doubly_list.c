@@ -60,10 +60,9 @@ list_t * list_create()
 
 
 // free a list, including free all its node.
-void list_free(list_t *list)
+void list_free(list_t * list)
 {
 	if(list){
-
 		list_free_node(list);
 		free(list);
 	}
@@ -71,7 +70,7 @@ void list_free(list_t *list)
 
 
 // Return the length of the list.
-int list_count(list_t *list)
+int list_count(list_t * list)
 {
 	int len;
 	len = list->length;
@@ -80,7 +79,7 @@ int list_count(list_t *list)
 }
 
 // free all of the list's nodes.
-void list_free_node(list_t *list)
+void list_free_node(list_t * list)
 {
 	node_t * tmp;
 	node_t * current = list->head;
@@ -89,7 +88,7 @@ void list_free_node(list_t *list)
 	while( current != NULL ){
 		tmp = current;
 		current = current -> next;
-		free(tmp);
+		node_free(tmp);
 	}
 
         // reset list's status
@@ -102,12 +101,12 @@ void list_free_node(list_t *list)
 
 
 // Push a node to the head of the list
-int list_head_add_node(list_t *list, node_t *node)
+int list_head_insert_node(list_t * list, node_t * node)
 {
 	if (!node || !list)
         	return -1;
 
-        node_t *tmp;
+        node_t * tmp = node;
 
         // If this list without any node
 	if (list->length == 0){
@@ -120,6 +119,8 @@ int list_head_add_node(list_t *list, node_t *node)
 
 		node -> next = tmp;
 		node -> prev = NULL;
+
+                list -> head = node;
 	}
 
 	(list -> length)++;
@@ -127,8 +128,34 @@ int list_head_add_node(list_t *list, node_t *node)
 	return 0;
 }
 
+// Push a node to the tail of the list.
+int list_tail_insert_node(list_t * list, node_t * node)
+{
+        if (!node || !list)
+        	return -1;
+
+        node_t * tmp = node;
+
+        if (list->length == 0){
+                list -> head = list -> tail = node;
+        }else{
+                tmp = list -> tail;
+                tmp -> next = node;
+
+                node -> prev = tmp;
+                node -> next = NULL;
+
+                list -> tail = node;
+        }
+
+        (list -> length)++;
+        return 0;
+}
+
+
+
 // Pop a node from the head of list, or the top of the stack.
-node_t *list_head_pop_node(list_t *list)
+node_t * list_head_pop_node(list_t * list)
 {
         if (!list || list->length < 1)
                 return NULL;
@@ -153,4 +180,50 @@ node_t *list_head_pop_node(list_t *list)
 	}
 
 	return n;
+}
+
+
+
+// Pop a node from the tail of list, or the bottom of the stack.
+node_t * list_tail_pop_node(list_t * list)
+{
+        if (!list || list->length < 1)
+                return NULL;
+
+	node_t * n;
+        n = list -> tail;
+
+	if (n){
+                // only one node in this list
+                if (list->head == list->tail){
+                        list->head = list->tail = NULL;
+
+                }else{
+                        list->tail = n->prev;
+                        list->tail->next = NULL;
+                }
+
+                (list->length)--;
+
+                n->prev = NULL;
+                n->next = NULL;
+	}
+
+	return n;
+}
+
+/* print the list */
+int print_list(node_t * head)
+{
+	if (head == NULL)
+		return -1;
+
+	node_t * current = head;
+
+	while ( current != NULL ){
+		printf("%d\n", current->value);
+                current = current -> next;
+	}
+
+	return 0;
 }

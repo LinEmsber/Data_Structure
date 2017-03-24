@@ -36,11 +36,18 @@ struct list {
 
 node_t * node_create(int target_value);
 int node_free( node_t * node );
+
 list_t * list_create();
-void list_free(list_t *list);
-int list_count(list_t *list);
-void list_free_node(list_t *list);
-int list_head_add_node(list_t *list, node_t *node);
-node_t *list_head_pop_node(list_t *list);
+void list_free(list_t * list);
+int list_count(list_t * list);
+void list_free_node(list_t * list);
+
+int list_head_insert_node(list_t * list, node_t * node);
+int list_tail_insert_node(list_t * list, node_t * node);
+node_t * list_head_pop_node(list_t * list);
+node_t * list_tail_pop_node(list_t * list);
+
+int print_list(node_t * head);
+
 
 #endif
