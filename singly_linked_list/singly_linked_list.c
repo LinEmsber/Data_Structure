@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "singly_linked_list.h"
 
 /* create a node */
 node_t * node_create(int val)
@@ -24,7 +25,7 @@ node_t * node_create(int val)
 }
 
 /* add a new node */
-int node_add(node_t * head, node_t * n)
+int node_insert(node_t * head, node_t * n)
 {
         if (head == NULL || n == NULL)
                 return -1;
@@ -38,7 +39,7 @@ int node_add(node_t * head, node_t * n)
 /* According to the target value to remove a node from a list,
  * and free this target node.
  */
-int node_remove(node_t * head, int target_val)
+int node_delete(node_t * head, int target_val)
 {
         if (head == NULL)
                 return -1;
@@ -51,8 +52,13 @@ int node_remove(node_t * head, int target_val)
 	while(entry){
 		if(entry->val == target_val){
                         *pp = entry->next;
-                        free(entry);
+			free(entry);
                         ret = 0;
+
+			// remember to break from the while loop. The next two expression
+			// will error happen, because the variable, entry, is freed, it cannot
+			// be operated.
+			break;
                 }
 
 		pp = &entry->next;
@@ -63,7 +69,7 @@ int node_remove(node_t * head, int target_val)
 }
 
 /* free all node from a list */
-int node_free(node_t * head)
+int node_free_all(node_t * head)
 {
 	if (head == NULL)
 		return -1;
