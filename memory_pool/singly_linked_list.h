@@ -4,12 +4,16 @@
  * Create Date: 2017, May, 22
  */
 
-#include "singly_linked_list.h"
-
-
 #ifndef SINGLY_LIST_H
 #define SINGLY_LIST_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "singly_linked_list.h"
+
+
+// structure
 typedef struct node node_t;
 
 struct node{
@@ -18,11 +22,11 @@ struct node{
 };
 
 
-
+// function
 node_t * node_create(int val);
-int node_add(node_t * head, node_t * n);
-int node_remove(node_t * head, int target_val);
-int node_free(node_t * head);
+int node_insert(node_t * head, node_t * n);
+int node_delete(node_t * head, int target_val);
+int node_free_all(node_t * head);
 int print_list(node_t * head);
 
 
