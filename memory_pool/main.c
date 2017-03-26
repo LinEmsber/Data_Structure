@@ -16,6 +16,7 @@
 
 int main()
 {
+	int ret;
 	mem_pool_t * mp_entry;
 
 	mem_block_t *p_0;
@@ -27,21 +28,24 @@ int main()
 	mp_entry = mem_pool_create(32, 128);
 	print_mem_pool(mp_entry);
 
-	p_0 = mem_pool_assign_block(mp_entry, 32);
+	p_0 = mem_pool_alloc(mp_entry, 4);
 	print_mem_pool(mp_entry);
 
-	p_1 = mem_pool_assign_block(mp_entry, 128);
+	p_1 = mem_pool_alloc(mp_entry, 128);
 	print_mem_pool(mp_entry);
 
-	p_2 = mem_pool_assign_block(mp_entry, 512);
-	print_mem_pool(mp_entry);
-
-
-	mem_pool_retrieve_block(mp_entry, p_1);
+	p_2 = mem_pool_alloc(mp_entry, 512);
 	print_mem_pool(mp_entry);
 
 
-	mp_entry = mem_pool_free(mp_entry);
+	mem_pool_retrieve(mp_entry, p_0);
+	printf("mem_pool_retrieve\n");
+	// mem_pool_retrieve(mp_entry, p_1);
+	// mem_pool_retrieve(mp_entry, p_2);
+	print_mem_pool(mp_entry);
+
+
+	ret = mem_pool_free(mp_entry);
 
 	return 0;
 }

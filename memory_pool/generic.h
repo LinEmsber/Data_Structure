@@ -4,14 +4,12 @@
  * Create Date: 2017, Mar, 14
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "mem_pool.h"
-
-
 #ifndef GENERIC_H
 #define GENERIC_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "mem_pool.h"
 
 #define SAFE_FREE(p) _safe_free( (void**) &p )
 

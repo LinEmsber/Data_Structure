@@ -19,6 +19,8 @@
 #define MEM_POOL_SIZE   (1024 * 1024)
 #define MEM_POOL_ALIGN_SIZE 8
 
+
+/* structure */
 typedef struct mem_block {
 	uint8_t * mem_block_start;     		// the memory block start
 	uint8_t * mem_block_end;     		// the memory block end
@@ -47,10 +49,11 @@ typedef struct mem_pool {
 }mem_pool_t;
 
 
+/* function */
 mem_pool_t * mem_pool_create (uint32_t block_size, uint32_t block_count);
-mem_block_t * mem_pool_assign_block (mem_pool_t * mp, uint32_t size);
-mem_pool_t * mem_pool_retrieve_block (mem_pool_t * mp, mem_block_t * mb);
-mem_pool_t * mem_pool_free(mem_pool_t *mp);
+mem_block_t * mem_pool_alloc (mem_pool_t * mp, uint32_t size);
+int mem_pool_retrieve (mem_pool_t * mp, mem_block_t * mb);
+int mem_pool_free(mem_pool_t * mp);
 
 
 #endif
