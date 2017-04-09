@@ -227,3 +227,78 @@ int print_list(node_t * head)
 
 	return 0;
 }
+
+int list_get_node_pos(list_t * list, node_t * node)
+{
+        int i = 1;
+        node_t * current = list -> head;
+
+        if (list && current){
+                while ( current ){
+                        if (current == node){
+                                return i;
+                        }
+                        current = current -> next;
+                        i ++;
+                }
+        }
+        return 0;
+}
+
+node_t * list_pick_node(list_t * list, int pos)
+{
+        int i;
+        node_t * current = list -> head;
+
+        if (pos > list->length)
+                return NULL;
+
+        for (i = 0; i < pos; i++)
+                current = current -> next;
+
+        if (current)
+                return current;
+        else
+                return NULL;
+}
+
+node_t * list_remove_specific_pos_node(list_t * list, int pos)
+{
+        // search the target node first
+        node_t * node = list_pick_node(list, pos);
+        if (node == NULL)
+                return NULL;
+
+        if (node == list->head){
+                return list_head_pop_node(list);
+
+        }else if (node == list->tail){
+                return list_tail_pop_node(list);
+
+        }else{
+                node -> prev -> next = node -> next;
+                node -> next -> prev = node -> prev;
+        }
+
+        (list -> length)--;
+
+        return node;
+}
+
+// TODO: fix algorithm and figure out a faster way
+void list_swap_nodes( list_t * list, int pos_1, int pos_2)
+{
+        node_t * node_1 = list_pick_node(list, pos_1);
+        node_t * node_2 = list_pick_node(list, pos_2);
+        node_t * tmp_pos_1_prev;
+        node_t * tmp_pos_1_next;
+
+        tmp_pos_1_next = node_1 -> next;
+        tmp_pos_1_prev = node_1 -> prev;
+
+        node_1 -> next = node_2 -> next;
+        node_1 -> prev = node_2 -> prev;
+
+        node_2 -> next = tmp_pos_1_next;
+        node_2 -> prev = tmp_pos_1_prev;
+}
