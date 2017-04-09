@@ -24,50 +24,60 @@ int main()
         list_t * list_entry = list_create();
 
         // use a node_t array to create many nodes.
-        for (i = 0; i < NODE_NUM; i = i + 2){
+        // for (i = 0; i < NODE_NUM; i = i + 2){
+        //         node_array[i] = node_create(i);
+        //         list_head_insert_node(list_entry, node_array[i]);
+        // }
+        //
+        //
+        // for (i = 1; i < NODE_NUM; i = i + 2){
+        //         node_array[i] = node_create(i);
+        //         list_tail_insert_node(list_entry, node_array[i]);
+        // }
 
-                node_array[i] = node_create(i);
-                list_head_insert_node(list_entry, node_array[i]);
-        }
-
-
-        for (i = 1; i < NODE_NUM; i = i + 2){
+        for (i = 0; i < NODE_NUM; i++){
                 node_array[i] = node_create(i);
                 list_tail_insert_node(list_entry, node_array[i]);
         }
 
-        print_list(list_entry->head);
-        list_free(list_entry);
+        printf("list_count(list_entry): %d\n", list_count(list_entry));
 
+
+        // // free node
+        // for (i = 0; i < NODE_NUM / 2; i = i + 2){
+        //         n_tmp = list_head_pop_node(list_entry);
+        //         node_free(n_tmp);
+        // }
         //
-        // node_t * n1 = node_create(10);
-        // node_t * n2 = node_create(30);
-        // node_t * n3 = node_create(50);
-        // node_t * n4 = node_create(20);
-        // node_t * n5 = node_create(40);
-        // node_t * n6 = node_create(130);
-        // node_t * n7 = node_create(100);
+        // for (i = 1; i < NODE_NUM / 2; i = i + 2){
+        //         n_tmp = list_tail_pop_node(list_entry);
+        //         node_free(n_tmp);
+        // }
+
+        printf("list_get_node_pos(list, node_array[9]):%d \n", list_get_node_pos(list_entry, node_array[9]));
+        printf("%p\n", list_pick_node(list_entry , 2));
+        printf("%p\n", node_array[7]);
+
+        for (i = 0; i < 3; i++){
+                n_tmp = list_remove_specific_pos_node(list_entry, 0);
+                free(n_tmp);
+        }
+
+        // n_tmp = list_remove_specific_pos_node(list_entry, 1);
+        // free(n_tmp);
         //
-        // list_head_insert_node(list_entry, n1);
-        // list_head_insert_node(list_entry, n2);
-        // list_head_insert_node(list_entry, n3);
-        // list_head_insert_node(list_entry, n4);
-        // list_head_insert_node(list_entry, n5);
-        //
-        // list_tail_insert_node(list_entry, n6);
-        // list_tail_insert_node(list_entry, n7);
-        // printf("list_count(list_entry): %d\n", list_count(list_entry));
-        //
-        // n_tmp = list_head_pop_node(list_entry);
-        // node_free(n_tmp);
-        // // n_tmp = NULL;
-        // printf("list_count(list_entry): %d\n", list_count(list_entry));
-        //
-        // n_tmp = list_tail_pop_node(list_entry);
-        // node_free(n_tmp);
-        // printf("list_count(list_entry): %d\n", list_count(list_entry));
-        //
-        //
+        // n_tmp = list_remove_specific_pos_node(list_entry, 2);
+        // free(n_tmp);
+
+        print_list(list_entry->head);
+
+        printf("====\n");
+        list_swap_nodes(list_entry, 1, 3);
+
+        print_list(list_entry->head);
+
+        // free list
+        list_free(list_entry);
 
 	return 0;
 }
