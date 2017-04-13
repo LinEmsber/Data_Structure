@@ -1,11 +1,29 @@
+# target
+TARGET = main
 
-CC=gcc
-FLAGS=-Wall -g
+# compiler
+CC = gcc
 
-all:	main
+# flags
+CFLAGS = -Wall -g
 
-tree:	tree.o
-	$(CC) $(FLAGS)-c tree.c
+# source code
+SRCS = tree.c main.c
+OBJS = $(SRCS: .c=.o)
 
+# header
+DEPS = tree.h
+
+# object
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS) $(CFLAGS_INCLUDE)
+
+
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_INCLUDE)
+
+
+# clean
+.PHONY: clean
 clean:
-	rm *.o
+	$(RM) $(EXEC) *.o $(TARGET)

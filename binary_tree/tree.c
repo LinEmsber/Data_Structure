@@ -3,13 +3,7 @@
 #include "tree.h"
 
 
-// ======== typedef ========
-typedef struct node node_t;
-typedef struct tree tree_t;
-
-
-
-// ======== compare siblings ========
+/* compare siblings */
 
 /* compare two values to determine the node to turn left or right.
  *
@@ -37,7 +31,7 @@ int compare_value(int value_1, int value_2)
 }
 
 
-// ======== node ========
+/* node */
 
 /* Allocate a memory for a node.
  */
@@ -92,7 +86,7 @@ node_t *node_input_data(node_t *node, void *input_data)
 }
 
 
-// ======== tree ========
+/* tree */
 
 /* Allocate a memory for a tree.
  */
@@ -137,7 +131,7 @@ int tree_count(tree_t *tree)
 }
 
 
-// ======== search ========
+/* search */
 
 /* search a node with a specific value from a tree in recurive method.
  *
@@ -195,7 +189,7 @@ node_t *search_iteratively(node_t *root, int target_value)
 	return NULL;
 }
 
-// ======== insert node ========
+/* insert node */
 
 /* insert a node into a node
  *
@@ -205,10 +199,10 @@ node_t *search_iteratively(node_t *root, int target_value)
 node_t *node_insert_node( node_t *node, int value)
 {
 	if (node == NULL){
-		node_t *node = node_create();
-		node_init(node);
+		node_t *new_node = node_create();
+		node_init(new_node);
 		node_input_value(node, value);
-		return node;
+		return new_node;
 
 	}else{
 		int compare_ret = compare_value(node->value, value);
@@ -241,7 +235,7 @@ tree_t *tree_insert_node( tree_t *tree, int value)
 }
 
 
-// ======== min ========
+/* min */
 
 /* Return the minimum node from a node in iterative method.
  *
@@ -290,7 +284,7 @@ node_t *tree_min(tree_t *tree)
 }
 
 
-// ======== max ========
+/* max */
 
 /* Return the maximun node from a node in iterative method.
  *
@@ -338,7 +332,7 @@ node_t *tree_max(tree_t *tree)
 	return node_max_2(tree -> root);
 }
 
-// ======== node swap ========
+/* node swap */
 void node_swap(node_t *node_1, node_t *node_2)
 {
 	if (node_1 != NULL && node_2 != NULL){
@@ -351,7 +345,7 @@ void node_swap(node_t *node_1, node_t *node_2)
 }
 
 
-// ======== find parent node ========
+/* find parent node */
 /* search the parent of the specific node from the root of tree.
  *
  * @root: the root of the tree which we want to search.
@@ -395,7 +389,7 @@ node_t* node_find_parent(node_t *node, node_t *target_node)
 }
 
 
-// ======== find successor ========
+/* find successor */
 // There are two cases here:
 //
 // 1. The node has a right subtree.
@@ -424,7 +418,7 @@ node_t *node_successor(node_t * node)
 }
 
 
-// ======== remove node ========
+/* remove node */
 
 
 /* remove a node with specific value from a hierarchy of node
@@ -556,7 +550,8 @@ void node_remove_left_most(node_t *node)
 	}
 }
 
-// ================== operation ==================
+/* operation */
+
 // To check the value is contained in a hierarchy of a node.
 node_t *is_node_contain_value(node_t *node, int iuput_value)
 {
@@ -608,7 +603,8 @@ int node_level(node_t* node)
 	}
 }
 
-// ==================breadth first search==================
+/* breadth first search */
+
 // Print nodes at a given level.
 int print_given_level(node_t* root, int level)
 {
@@ -640,7 +636,7 @@ void print_breadth_first_search(node_t* root)
 
 
 
-// ================== depth first search ==================
+/* depth first search */
 
 /* There are 3 different kinds of depth first traversals.
  *
