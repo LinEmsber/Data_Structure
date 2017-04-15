@@ -13,28 +13,32 @@ mem_pool_t * mem_pool_create( size_t size )
 	// mp->next = (char*)&mp[1];
 	// mp->end = mp->next + size;
 
-	mem_pool_t * mp;
-	mp = malloc( sizeof(*mp) );
+	// mem_pool_t * mp;
+	// mp = malloc( sizeof(*mp) );
 
-	mp->next = (void*) malloc (size);
-	mp->end = mp->next + size;
+	mem_pool_t * mp = malloc( sizeof(*mp) );
+
+	mp->start = (void *) malloc ( sizeof(char) * size );
+	mp->next = mp->start;
+	mp->end = mp->start + size;
 
 	return mp;
 }
 
 void mem_pool_destroy( mem_pool_t *mp )
 {
+	free(mp->start);
 	free(mp);
 }
 
-size_t mem_pool_available( mem_pool_t *mp )
+size_t mem_pool_available_space( mem_pool_t *mp )
 {
 	return mp->end - mp->next;
 }
 
 void * mem_pool_alloc( mem_pool_t *mp, size_t size )
 {
-	if( mem_pool_available(mp) < size )
+	if( mem_pool_available_space(mp) < size )
 		return NULL;
 
 	void *mem = (void*)mp->next;
