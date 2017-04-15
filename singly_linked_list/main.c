@@ -5,47 +5,61 @@
  */
 
 // The simple test and error check:
-// valgrind --leak-check=yes -v ./a.out
+// gcc -g  -Wall -std=c99 main.c singly_linked_list.c && valgrind -v ./a.out
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "singly_linked_list.h"
 
+#define NODE_NUMS 10
 
 int main()
 {
+	int i;
 	int ret = 0;
 
+	node_t * p_element[NODE_NUMS];
+
+	/* create a head node */
 	node_t * start = node_create(0);
-	node_t * e1 = node_create(10);
-	node_t * e2 = node_create(30);
-        node_t * e3 = node_create(50);
-        node_t * e4 = node_create(70);
-        node_t * e5 = node_create(90);
-	node_t * e6 = node_create(100);
-	node_t * e7 = node_create(200);
 
-	ret = node_insert( start, e1 );
-	ret = node_insert( start, e2 );
-        ret = node_insert( start, e3 );
-        ret = node_insert( start, e4 );
-        ret = node_insert( start, e5 );
-	ret = node_insert( start, e6 );
-	ret = node_insert( start, e7 );
+	for (i = 0; i < NODE_NUMS; i ++){
+
+		/* create nodes */
+		p_element[i] = node_create(i * 10 + 10);
+		if(p_element == NULL)
+			printf("error\n");
+
+		/* insert nodes behind head, FILO */
+		ret = node_insert( start, p_element[i] );
+		if (ret < 0)
+			printf("error\n");
+	}
 
         ret = print_list( start );
 
+	/* delete one node from list */
         ret = node_delete( start, 30);
-        ret = node_delete( start, 100);
+	if (ret < 0)
+		printf("error\n");
 
-        printf("ret: %d\n", ret);
+	ret = node_delete( start, 90);
+	if (ret < 0)
+		printf("error\n");
+
+	ret = node_delete( start, 10);
+	if (ret < 0)
+		printf("error\n");
 
         ret = print_list( start );
-        printf("ret: %d\n", ret);
+	if (ret < 0)
+		printf("error\n");
 
+	/* free all nodes of list */
 	ret = node_free_all(start);
-        printf("ret: %d\n", ret);
+	if (ret < 0)
+		printf("error\n");
 
 	return 0;
 }
