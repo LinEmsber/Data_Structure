@@ -46,6 +46,28 @@ int node_delete(node_t * head, int target_val)
 
         int ret = -1;
 
+	/*
+	I use tool: gdb to analyze argument, head, and variable, **PP.
+	At the begin of this functions:
+
+		(gdb) p *head
+		$1 = {val = 0, next = 0x602150}
+		(gdb) p head
+		$2 = (node_t *) 0x602010
+		(gdb) p &head
+		$3 = (node_t **) 0x7fffffffdad8
+
+	After the "node_t **pp = &head;" :
+
+		(gdb) p **pp
+		$4 = {val = 0, next = 0x602150}
+		(gdb) p *pp
+		$5 = (node_t *) 0x602010
+		(gdb) p pp
+		$6 = (node_t **) 0x7fffffffdad8
+
+	*/
+
 	node_t **pp = &head;
 	node_t *entry = head;
 
@@ -55,9 +77,10 @@ int node_delete(node_t * head, int target_val)
 			free(entry);
                         ret = 0;
 
-			// remember to break from the while loop. The next two expression
-			// will error happen, because the variable, entry, is freed, it cannot
-			// be operated.
+			/* Remember to break from the while loop.
+			 * The next two expressions will make errors happen,
+			 * because the variable, entry, is freed, it cannot be operated.
+			 */
 			break;
                 }
 
