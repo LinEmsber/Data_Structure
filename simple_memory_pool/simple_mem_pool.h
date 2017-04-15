@@ -20,6 +20,7 @@ mem_pool_t * mem_pool_create( size_t size );
 void mem_pool_destroy( mem_pool_t *mp );
 size_t mem_pool_available_space( mem_pool_t *mp );
 void * mem_pool_alloc( mem_pool_t *mp, size_t size );
+size_t mem_pool_remaining_space( mem_pool_t *mp );
 
 
 #endif

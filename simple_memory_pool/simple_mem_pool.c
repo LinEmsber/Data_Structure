@@ -7,15 +7,6 @@
 /* function */
 mem_pool_t * mem_pool_create( size_t size )
 {
-	// mem_pool_t * mp;
-	// mp = malloc( size + sizeof(*mp) );
-	//
-	// mp->next = (char*)&mp[1];
-	// mp->end = mp->next + size;
-
-	// mem_pool_t * mp;
-	// mp = malloc( sizeof(*mp) );
-
 	mem_pool_t * mp = malloc( sizeof(*mp) );
 
 	mp->start = (void *) malloc ( sizeof(char) * size );
@@ -45,4 +36,11 @@ void * mem_pool_alloc( mem_pool_t *mp, size_t size )
 	mp->next += size;
 
 	return mem;
+}
+
+size_t mem_pool_remaining_space( mem_pool_t *mp )
+{
+	size_t remaining_space = mem_pool_available_space(mp);
+
+	return remaining_space;
 }
