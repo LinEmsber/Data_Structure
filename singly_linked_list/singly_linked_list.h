@@ -13,7 +13,7 @@
 #include "singly_linked_list.h"
 
 
-// structure
+/* structure */
 typedef struct node node_t;
 
 struct node{
@@ -22,12 +22,16 @@ struct node{
 };
 
 
-// function
+/* function */
 node_t * node_create(int val);
 int node_insert(node_t * head, node_t * n);
 int node_delete(node_t * head, int target_val);
+
 int node_free_all(node_t * head);
+
 int print_list(node_t * head);
 
+node_t * previous_node(node_t * head, node_t * target_node)
+int swap_nodes(node_t **head, node_t **node_1, node_t **node_2)
 
 #endif
