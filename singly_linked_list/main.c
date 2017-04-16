@@ -5,7 +5,7 @@
  */
 
 // The simple test and error check:
-// gcc -g  -Wall -std=c99 main.c singly_linked_list.c && valgrind -v ./a.out
+// gcc -g -Wall -std=c99 main.c singly_linked_list.c && valgrind -v ./a.out
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,12 +39,17 @@ int main()
 
         ret = print_list( start );
 
+
+	/* reverse list */
+	for (i = 0; i < NODE_NUMS / 2; i ++){
+		swap_nodes( &start, &p_element[i], &p_element[NODE_NUMS - 1 - i]);
+	}
+
+	ret = print_list( start );
+
+
 	/* delete one node from list */
         ret = node_delete( start, 30);
-	if (ret < 0)
-		printf("error\n");
-
-	ret = node_delete( start, 90);
 	if (ret < 0)
 		printf("error\n");
 
@@ -53,8 +58,6 @@ int main()
 		printf("error\n");
 
         ret = print_list( start );
-	if (ret < 0)
-		printf("error\n");
 
 	/* free all nodes of list */
 	ret = node_free_all(start);
