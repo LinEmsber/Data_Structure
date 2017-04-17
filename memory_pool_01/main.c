@@ -1,13 +1,13 @@
-/* simple memory pool
+/* memory pool
  *
- * USAGE: gcc -Wall -std=c99 main.c simple_mem_pool.c && ./a.out
+ * USAGE: gcc -Wall -std=c99 main.c mem_pool.c && ./a.out
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "simple_mem_pool.h"
+#include "mem_pool.h"
 
 #define BLOCK_NUMS 100
 

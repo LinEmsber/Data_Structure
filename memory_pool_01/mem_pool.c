@@ -1,7 +1,7 @@
-/* simple_mem_pool.c */
+/* mem_pool.c */
 
 
-#include "simple_mem_pool.h"
+#include "mem_pool.h"
 
 
 /* function */

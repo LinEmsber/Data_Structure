@@ -1,4 +1,4 @@
-/* simple_mem_pool.h */
+/* mem_pool.h */
 
 #ifndef MEM_POOL_H
 #define MEM_POOL_H
