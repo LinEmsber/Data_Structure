@@ -5,7 +5,7 @@ EXEC = main
 CC ?= gcc
 
 # compiler flags and options
-CFLAGS_common = -Wall -std=gnu99
+CFLAGS_common = -Wall -std=gnu99 -g
 CFLAGS_opt  = -O0
 
 # source files
