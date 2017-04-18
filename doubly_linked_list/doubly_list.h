@@ -51,7 +51,7 @@ node_t * list_head_pop_node(list_t * list);
 node_t * list_tail_pop_node(list_t * list);
 
 /* The operations of list and node */
-int print_list(node_t * head);
+int print_list_head(node_t * head);
 int list_get_node_pos(list_t * list, node_t * node);
 node_t * list_pick_node(list_t * list, int pos);
 node_t * list_remove_specific_pos_node(list_t * list, int pos);

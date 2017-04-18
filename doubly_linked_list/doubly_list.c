@@ -10,18 +10,14 @@
 // create and initialize a new node.
 node_t * node_create(int target_value)
 {
-	node_t *n;
-        n = malloc( sizeof(*n) );
+	node_t * n = malloc( sizeof(*n) );
+        if ( !n )
+		return NULL;
 
-        if (n != NULL){
-                n->value = target_value;
-                n->prev = NULL;
-                n->next = NULL;
-                n->data = NULL;
-        }else{
-                free(n);
-                return NULL;
-        }
+        n->value = target_value;
+        n->prev = NULL;
+        n->next = NULL;
+        n->data = NULL;
 
 	return n;
 }
@@ -43,17 +39,14 @@ int node_free( node_t * node )
 // create and initialize a doubly linked list.
 list_t * list_create()
 {
-        list_t * l;
-        l = malloc( sizeof (*l) );
+        list_t * l = malloc( sizeof (*l) );
 
-	if(l != NULL) {
-                l->head = NULL;
-                l->tail = NULL;
-                l->length = 0;
-	}else{
-                free(l);
-                return NULL;
-        }
+	if( !l )
+		return NULL;
+
+        l->head = NULL;
+        l->tail = NULL;
+        l->length = 0;
 
 	return l;
 }
@@ -115,7 +108,7 @@ int list_head_insert_node(list_t * list, node_t * node)
         // add a node behind the original head node
 	}else{
 		tmp = list -> head;
-		tmp -> prev = node;
+		list -> head -> prev = node;
 
 		node -> next = tmp;
 		node -> prev = NULL;
@@ -212,8 +205,8 @@ node_t * list_tail_pop_node(list_t * list)
 	return n;
 }
 
-/* print the list */
-int print_list(node_t * head)
+/* print the list from the head node */
+int print_list_head(node_t * head)
 {
 	if (head == NULL)
 		return -1;
@@ -285,20 +278,56 @@ node_t * list_remove_specific_pos_node(list_t * list, int pos)
         return node;
 }
 
-// TODO: fix algorithm and figure out a faster way
+// TODO: organize the algorithm, make it better.
 void list_swap_nodes( list_t * list, int pos_1, int pos_2)
 {
-        node_t * node_1 = list_pick_node(list, pos_1);
-        node_t * node_2 = list_pick_node(list, pos_2);
-        node_t * tmp_pos_1_prev;
-        node_t * tmp_pos_1_next;
+	int a;
+	int b;
 
-        tmp_pos_1_next = node_1 -> next;
-        tmp_pos_1_prev = node_1 -> prev;
+	/* swap two number if pos_1 < pos_2 */
+	if (pos_1 > pos_2){
+		int t;
 
-        node_1 -> next = node_2 -> next;
-        node_1 -> prev = node_2 -> prev;
+		t = pos_2;
+		b = pos_1;
+		a = t;
+	}else{
+		a = pos_1;
+		b = pos_2;
+	}
 
-        node_2 -> next = tmp_pos_1_next;
-        node_2 -> prev = tmp_pos_1_prev;
+	node_t * node1 = list_pick_node(list, a);
+	node_t * node2 = list_pick_node(list, b);
+
+	struct node * temp;
+
+	temp = node1->next;
+	node1->next = node2->next;
+	node2->next = temp;
+
+	if (node1->next != NULL)
+		node1->next->prev = node1;
+	if (node2->next != NULL)
+		node2->next->prev = node2;
+
+
+	/* node1 is the first node of list */
+	temp = node1->prev;
+	if (temp == NULL){
+		node1->prev = node2->prev;
+		node1->prev->next = node1;
+
+		list -> head = node2;
+		node2->prev = NULL;
+	}else{
+
+		node1->prev = node2->prev;
+		node2->prev = temp;
+	}
+
+	if (node1->prev != NULL)
+		node1->prev->next = node1;
+
+	if (node2->prev != NULL)
+		node2->prev->next = node2;
 }
