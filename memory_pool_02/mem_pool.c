@@ -144,7 +144,7 @@ mem_pool_handle _create_pool(uint32_t _block_size, uint32_t _block_count)
 	/* create free nodes. */
 	for(; space < mp->end; space += _block_size) {
 
-		/* Get the next block node. 
+		/* Get the next block node.
 		 * If no more block node, use _alloc_blocks() to generate a new block node list.
 		 */
 		mem_pool_block_t * mpb = _get_next_block();
