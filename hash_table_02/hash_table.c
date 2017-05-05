@@ -80,7 +80,7 @@ void * hash_table_put(hash_table_t * _ht, char * _key, void * _data)
 		return HT_ERROR;
 
 //	strcpy(he->key, _key);
-	he->key =_key;
+	he->key = _key;
 	he->data = _data;
 
 	// Add the element at the beginning of the linked list
@@ -103,7 +103,7 @@ void * hash_table_get(hash_table_t * _ht, char * _key)
 		// printf("%s\n", _key);
 
 		if(!strcmp(he->key, _key)){
-			printf("find it.\n");
+			// printf("find it.\n");
 			return he->data;
 		}
 

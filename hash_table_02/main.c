@@ -6,32 +6,60 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "hash_table.h"
 #include "tools.h"
 
-#define TABLE_SIZE 100
-
+#define TABLE_SIZE 10
 
 int main()
 {
 	unsigned int i;
-	void * p;
-	char ** pp = string_increament(20);
+	srand( (unsigned) time(NULL) );
 
+	void * p;
+	char ** pp_key = string_generator(32, TABLE_SIZE);
+	char ** pp_data = string_increament(TABLE_SIZE);
+	char * pp_key_return[TABLE_SIZE];
+
+
+	/* create, put, and get hash */
 	hash_table_t * hash_table_entry = hash_table_create(TABLE_SIZE);
 
-	for (i = 0; i < 20; i++){
-		hash_table_put(hash_table_entry, pp[i], pp[i]);
-		p = hash_table_get(hash_table_entry, pp[i]);
-		printf( "%s\n", p );
+	for (i = 0; i < TABLE_SIZE; i++){
+
+		hash_table_put(hash_table_entry, pp_key[i], pp_data[i]);
+		p = hash_table_get(hash_table_entry, pp_key[i]);
+		// printf( "%s\n", (char *)p );
 
 	}
 
 
+	/* hash_table_list_key */
+	hash_table_list_keys(hash_table_entry, pp_key_return, TABLE_SIZE);
+	for (i = 0; i < TABLE_SIZE; i++){
+		printf( "%s\n", (char *)pp_key_return[i] );
+	}
 
+
+	/* iterator */
+
+	hash_elem_iter_t hash_elem_iter_entry = INIT_HASH_TABLE_ITERATOR( hash_table_entry );
+	hash_elem_t * hash_elem_entry = hash_table_iterate( &hash_elem_iter_entry );
+
+	while ( hash_elem_entry != NULL){
+
+		printf("key: %s, data: %s\n", hash_elem_entry->key, (char *) hash_elem_entry->data);
+		hash_elem_entry = hash_table_iterate( &hash_elem_iter_entry );
+
+	}
+
+	/* destory */
 	hash_table_destroy(hash_table_entry);
-	free_string(pp, 20);
+	free_string(pp_key, TABLE_SIZE);
+	free_string(pp_data, TABLE_SIZE);
+
 
 	return 0;
 }
