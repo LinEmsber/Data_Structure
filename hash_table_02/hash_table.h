@@ -48,11 +48,11 @@ void * hash_table_get(hash_table_t * _ht, char * _key);
 void * hash_table_remove(hash_table_t * _ht, char * _key);
 
 void hash_table_list_keys(hash_table_t * _ht, char ** _key_array, size_t _len);
-void hash_table_list_values(hash_table_t * _ht, void ** _value_array, size_t _len);
+void hash_table_list_datas(hash_table_t * _ht, void ** _data_array, size_t _len);
 
 hash_elem_t * hash_table_iterate(hash_elem_iter_t * _iterator);
 char * hash_table_iterate_keys(hash_elem_iter_t * iterator);
-void * hash_table_iterate_values(hash_elem_iter_t * iterator);
+void * hash_table_iterate_datas(hash_elem_iter_t * iterator);
 
 void hash_table_clear(hash_table_t * _ht, int _free_data);
 void hash_table_destroy(hash_table_t * _ht);

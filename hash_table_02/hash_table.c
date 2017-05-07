@@ -6,13 +6,7 @@
 
 #include "hash_table.h"
 
-
-/* variable */
-
-char err_ptr;
-void * HT_ERROR = &err_ptr;
-
-
+/* hash function use DJB2 algorithm. */
 unsigned int hash_table_calc_hash(char* str)
 {
 	unsigned int hash = 5381;
@@ -23,47 +17,53 @@ unsigned int hash_table_calc_hash(char* str)
 	return hash;
 }
 
-/* Create a hash table with capacity. */
+/* Create a hash table with the capacity.
+ * According to the capacity to create the hash elements, and save them in a table.
+ */
 hash_table_t * hash_table_create(unsigned int _capacity)
 {
 	hash_table_t * hash_table_entry = malloc( sizeof(*hash_table_entry) );
 	if(!hash_table_entry)
 		return NULL;
 
-	hash_table_entry->table = malloc(_capacity * sizeof(hash_elem_t) );
+	hash_table_entry->table = malloc( sizeof(hash_elem_t) * _capacity );
 	if(hash_table_entry->table == NULL){
 		free(hash_table_entry);
 		return NULL;
 	}
 
+	unsigned int i;
 	hash_table_entry->capacity = _capacity;
 	hash_table_entry->element_number = 0;
 
-	unsigned int i;
 	for(i = 0; i < _capacity; i++)
 		hash_table_entry->table[i] = NULL;
 
 	return hash_table_entry;
 }
 
-/* Store data in the hash table.
- * If data with the same key are already stored, they are overwritten, and return by
- * the function. Else it return NULL.
+/* Store data in the hash table with the specific key.
+ * If the collision of the keys occurs, we replace the old data with the new data , and return the old data.
  */
 void * hash_table_put(hash_table_t * _ht, char * _key, void * _data)
 {
 	if(_data == NULL)
 		return NULL;
 
+	/* check the remaining space of the hash table. */
+	if (_ht->capacity == _ht->element_number){
+		printf("out of space of the hash table.\n");
+		return NULL;
+	}
+
 	unsigned int hash_code = hash_table_calc_hash(_key) % _ht->capacity;
 	hash_elem_t * he = _ht->table[hash_code];
 
-	while(he != NULL) {
+	/* If the hash element have already occupied by the other data. */
+	while( he != NULL ){
+		if( !strcmp(he->key, _key) ) {
 
-		/* find a exist same key */
-		if(!strcmp(he->key, _key)) {
-
-			/* replace the old data with new data, and return the old data. */
+			/* replace the old data with the new data, and return the old data. */
 			void * ret = he->data;
 			he->data = _data;
 
@@ -72,18 +72,15 @@ void * hash_table_put(hash_table_t * _ht, char * _key, void * _data)
 		he = he->next;
 	}
 
-	// Getting here means the key doesn't already exist
-
-//	he = malloc( sizeof(hash_elem_t) + strlen(_key)+1 );
+	/* Getting here means the key does not already exist, and no collision occurs. */
 	he = malloc( sizeof(hash_elem_t) );
 	if(he == NULL)
-		return HT_ERROR;
+		return NULL;
 
-//	strcpy(he->key, _key);
 	he->key = _key;
 	he->data = _data;
 
-	// Add the element at the beginning of the linked list
+	/* Add the element at the beginning of the linked list. */
 	he->next = _ht->table[hash_code];
 
 	_ht->table[hash_code] = he;
@@ -92,29 +89,26 @@ void * hash_table_put(hash_table_t * _ht, char * _key, void * _data)
 	return NULL;
 }
 
-/* Retrieve data from the hash table */
+/* Using the key to retrieve data from the hash table */
 void * hash_table_get(hash_table_t * _ht, char * _key)
 {
 	unsigned int hash_code = hash_table_calc_hash(_key) % _ht->capacity;
-	hash_elem_t* he = _ht->table[hash_code];
+	hash_elem_t * he = _ht->table[hash_code];
 
 	while(he != NULL) {
-		// printf("%s\n", he->key);
-		// printf("%s\n", _key);
 
 		if(!strcmp(he->key, _key)){
-			// printf("find it.\n");
 			return he->data;
 		}
 
 		he = he->next;
-
 	}
 	return NULL;
 }
 
-/* Remove data from the hash table.
- * Return the data removed from the table so that we can free memory if needed.
+
+/* Remove the data from the hash table according to the key.
+ * Return the data removed from the table, so that we can free its memory if needed.
  */
 void * hash_table_remove(hash_table_t * _ht, char * _key)
 {
@@ -124,7 +118,7 @@ void * hash_table_remove(hash_table_t * _ht, char * _key)
 
 	while(he != NULL) {
 
-		if(!strcmp(he->key, _key)) {
+		if( !strcmp(he->key, _key) ) {
 
 			void * ret = he->data;
 
@@ -140,6 +134,7 @@ void * hash_table_remove(hash_table_t * _ht, char * _key)
 
 			return ret;
 		}
+
 		prev = he;
 		he = he->next;
 	}
@@ -147,18 +142,21 @@ void * hash_table_remove(hash_table_t * _ht, char * _key)
 	return NULL;
 }
 
-/* List the keys of the hash table. */
+/* List the keys of the hash table.
+ * Using a string to save the keys of the hash table.
+ */
 void hash_table_list_keys(hash_table_t * _ht, char ** _key_array, size_t _len)
 {
 	if(_len < _ht->element_number)
 		return;
 
-	int key_array_index = 0; //Index to the current string in **k
+	hash_elem_t * he;
+	int key_array_index = 0;
 	int i = _ht->capacity;
 
 	while(--i >= 0) {
 
-		hash_elem_t * he = _ht->table[i];
+		he = _ht->table[i];
 		while(he) {
 
 			_key_array[key_array_index] = he->key;
@@ -168,13 +166,13 @@ void hash_table_list_keys(hash_table_t * _ht, char ** _key_array, size_t _len)
 	}
 }
 
-/* List values of the hash table. */
-void hash_table_list_values(hash_table_t * _ht, void ** _value_array, size_t _len)
+/* List datas of the hash table. */
+void hash_table_list_datas(hash_table_t * _ht, void ** _data_array, size_t _len)
 {
 	if(_len < _ht->element_number)
 		return;
 
-	int value_array_index = 0; //Index to the current string in **v
+	int data_array_index = 0; //Index to the current string in **v
 	int i = _ht->capacity;
 
 	while(--i >= 0) {
@@ -182,8 +180,8 @@ void hash_table_list_values(hash_table_t * _ht, void ** _value_array, size_t _le
 		hash_elem_t * he = _ht->table[i];
 		while(he) {
 
-			_value_array[value_array_index] = he->data;
-			value_array_index++;
+			_data_array[data_array_index] = he->data;
+			data_array_index++;
 			he = he->next;
 		}
 	}
@@ -207,27 +205,29 @@ hash_elem_t * hash_table_iterate(hash_elem_iter_t * _iterator)
 
 	hash_elem_t * he = _iterator->element;
 
+	/* The element of the iterator is set as the element's next hash node for convenient to obtain it
+	 * in the next time. */
 	if(he)
 		_iterator->element = he->next;
 
 	return he;
 }
 
-/* Iterate through the hash table's  keys. */
+/* Iterate through the hash table's keys. */
 char * hash_table_iterate_keys(hash_elem_iter_t * iterator)
 {
 	hash_elem_t * he = hash_table_iterate(iterator);
 	return (he == NULL ? NULL : he->key);
 }
 
-/* Iterate through the hash table's  values. */
-void * hash_table_iterate_values(hash_elem_iter_t * iterator)
+/* Iterate through the hash table's datas. */
+void * hash_table_iterate_datas(hash_elem_iter_t * iterator)
 {
 	hash_elem_t * he = hash_table_iterate(iterator);
 	return (he == NULL ? NULL : he->data);
 }
 
-/* Removes all elements stored in the hash table. */
+/* Removes all elements stored in the hash table, and free every hash node of table. */
 void hash_table_clear(hash_table_t * _ht, int _free_data)
 {
 	hash_elem_iter_t it = INIT_HASH_TABLE_ITERATOR(_ht);
@@ -237,8 +237,6 @@ void hash_table_clear(hash_table_t * _ht, int _free_data)
 
 	while(k != NULL) {
 		he = hash_table_remove(_ht, k);
-
-//		_free_data ? free(hash_table_remove(_ht, k)) : hash_table_remove(_ht, k);
 
 		if ( !he )
 			free(he);
@@ -250,7 +248,7 @@ void hash_table_clear(hash_table_t * _ht, int _free_data)
 /* Destroy the hash table and free memory. */
 void hash_table_destroy(hash_table_t * _ht)
 {
-	hash_table_clear(_ht, 1); // Delete and free all.
+	hash_table_clear(_ht, 1);
 	free(_ht->table);
 	free(_ht);
 }
