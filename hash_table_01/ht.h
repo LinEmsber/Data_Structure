@@ -1,9 +1,9 @@
+/* ht.h */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-#define SIZE 20
 
 
 /* structure */
@@ -19,6 +19,12 @@ struct hash_table{
 };
 
 
+/* declaration */
+struct hash_table * hash_table_create(int _capacity);
+struct hash_element * search(struct hash_table * _ht, char * _key);
+void insert(struct hash_table * _ht, char * _key, void * _data);
+struct hash_element * delete(struct hash_table * _ht, char * _key);
+void display(struct hash_table * _ht);
 
 
 /* function */
@@ -39,6 +45,10 @@ struct hash_table * hash_table_create(int _capacity)
 		free(ht);
 		return NULL;
 	}
+
+	int i;
+	for (i = 0; i < _capacity; i++)
+		ht->hash_array[i] = NULL;
 
 	ht->capacity = _capacity;
 	ht->element_number = 0;
@@ -74,7 +84,8 @@ void insert(struct hash_table * _ht, char * _key, void * _data)
 	int hash_code = calc_hash(_ht, _key);
 
 	/* move in array until find an empty space for data item */
-	while(_ht->hash_array[hash_code] != NULL && _ht->hash_array[hash_code]->key != -1) {
+	while(_ht->hash_array[hash_code] != NULL && _ht->hash_array[hash_code]->key != NULL) {
+	// while(_ht->hash_array[hash_code] != NULL ) {
 
 		++hash_code;
 		hash_code %= _ht->capacity;
@@ -112,7 +123,7 @@ void display(struct hash_table * _ht)
 	for(i = 0; i < _ht->capacity; i++) {
 
 		if(_ht->hash_array[i] != NULL)
-			printf("(%d,%d), ", _ht->hash_array[i]->key, _ht->hash_array[i]->data);
+			printf("(%s,%d), ", _ht->hash_array[i]->key, _ht->hash_array[i]->data);
 		else
 			printf("(~~,~~) ");
 	}
