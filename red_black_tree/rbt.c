@@ -10,37 +10,48 @@
 
 /*
  * TODO:
- * 	rbt_insert function add argument: root
+ * 	rbt_insert function add argument: _root
+ *	how to deal with sentinel in argument
  */
 
-struct reb_node {
+struct rbt_node {
 	enum {black, red} color;
 	int key;
-	struct reb_node * left;
-	struct reb_node * right;
-	struct reb_node * parent;
+	struct rbt_node * left;
+	struct rbt_node * right;
+	struct rbt_node * parent;
 };
 
-int rbt_insert (int);
-void rbt_insert_balance(struct reb_node *p_new );
-void rbt_rotate_left(struct reb_node *p_root);
-void rbt_rotate_right(struct reb_node *p_root);
-void rbt_display(struct reb_node *p_root,int level);
+int rbt_insert (struct rbt_node * _root, int);
+void rbt_insert_balance(struct rbt_node * _root, struct rbt_node * p_new );
+void rbt_rotate_left(struct rbt_node * _root, struct rbt_node * p_root);
+void rbt_rotate_right(struct rbt_node * _root, struct rbt_node * p_root);
+void rbt_display(struct rbt_node * p_root, int level);
 
 
-struct reb_node * root;
-/* The sentinel will be the parent of root node and replace NULL */
-struct reb_node * sentinel;
 
-int rbt_insert (int _key )
+void rbt_create_root()
 {
-	struct reb_node *p_new, *p_root, *p_parent;
+	static struct rbt_node * _root;
+	/* The sentinel will be the parent of _root node and replace NULL */
+	static struct rbt_node * sentinel;
+
+	sentinel = (struct rbt_node *) malloc(sizeof(struct rbt_node));
+	sentinel->key = -1;
+	sentinel->color = black;
+	_root = sentinel;
+}
+
+int rbt_insert (struct rbt_node * _root, int _key )
+{
+	struct rbt_node * p_new, * p_root, * p_parent;
 
 	p_parent = sentinel;
-	p_root = root;
+	p_root = _root;
 
 	/* find the right position for new node and its parent. */
 	while( p_root != sentinel ) {
+
 		p_parent = p_root;
 
 		if( _key < p_root->key )
@@ -54,7 +65,7 @@ int rbt_insert (int _key )
 			return -1;
 	}
 
-	p_new = (struct reb_node *) malloc(sizeof(struct reb_node));
+	p_new = (struct rbt_node *) malloc(sizeof(struct rbt_node));
 	p_new->key = _key;
 	p_new->left = sentinel;
 	p_new->right = sentinel;
@@ -62,7 +73,7 @@ int rbt_insert (int _key )
 	p_new->parent = p_parent;
 
 	if(p_parent == sentinel)
-		root = p_new;
+		_root = p_new;
 
 	else if(p_new ->key < p_parent->key )
 		p_parent->left = p_new;
@@ -75,9 +86,9 @@ int rbt_insert (int _key )
 	return 0;
 }
 
-void rbt_insert_balance(struct reb_node *p_new )
+void rbt_insert_balance(struct rbt_node * _root, struct rbt_node * p_new )
 {
-	struct reb_node *p_uncle, *p_parent, *p_grand;
+	struct rbt_node * p_uncle, * p_parent, * p_grand;
 
 	/* The new node must be red. Thus, its parent cannot be black. */
 	while( p_new->parent->color == red ) {
@@ -127,7 +138,7 @@ void rbt_insert_balance(struct reb_node *p_new )
 				p_new = p_grand;
 			}
 
-			/*p_uncle is black */
+			/* p_uncle is black */
 			else {
 				/* Case R_2a */
 				if( p_new == p_parent->left) {
@@ -145,15 +156,15 @@ void rbt_insert_balance(struct reb_node *p_new )
 
 	}
 
-	root->color = black;
+	_root->color = black;
 }
 
 
-void rbt_rotate_left(struct reb_node *p_node)
+void rbt_rotate_left(struct rbt_node * _root, struct rbt_node * p_node)
 {
-	struct reb_node *p_node_r;
+	struct rbt_node * p_node_r;
 
-	/*p_node_r is right child of p_node*/
+	/* p_node_r is right child of p_node*/
 	p_node_r = p_node->right;
 	p_node->right= p_node_r->left;
 
@@ -163,7 +174,7 @@ void rbt_rotate_left(struct reb_node *p_node)
 	p_node_r->parent = p_node->parent;
 
 	if(p_node->parent == sentinel )
-		root = p_node_r;
+		_root = p_node_r;
 
 	else if( p_node == p_node->parent->left )
 		p_node->parent->left = p_node_r;
@@ -175,11 +186,11 @@ void rbt_rotate_left(struct reb_node *p_node)
 	p_node->parent = p_node_r;
 }
 
-void rbt_rotate_right(struct reb_node *p_node)
+void rbt_rotate_right(struct rbt_node * _root, struct rbt_node * p_node)
 {
-	struct reb_node *p_node_l;
+	struct rbt_node * p_node_l;
 
-	/*p_node_l is left child of p_node*/
+	/* p_node_l is left child of p_node*/
 	p_node_l = p_node->left;
 	p_node->left= p_node_l->right;
 
@@ -189,7 +200,7 @@ void rbt_rotate_right(struct reb_node *p_node)
 	p_node_l->parent = p_node->parent;
 
 	if(p_node->parent == sentinel )
-		root = p_node_l;
+		_root = p_node_l;
 
 	else if( p_node == p_node->parent->right )
 		p_node->parent->right = p_node_l;
@@ -202,21 +213,25 @@ void rbt_rotate_right(struct reb_node *p_node)
 }
 
 
-void rbt_display(struct reb_node *p_root,int level)
+void rbt_display(struct rbt_node * p_root, int level)
 {
 	int i;
-	if ( p_root!=sentinel )
-	{
+	if ( p_root != sentinel ) {
+
 		rbt_display(p_root->right, level+1);
 		printf("\n");
-		for(i=0; i<level; i++)
+
+		for(i = 0; i < level; i++)
 			printf("    ");
+
 		printf("%d", p_root->key);
+
 		if(p_root->color==red)
 			printf("R");
 		else
 			printf("B");
-		rbt_display(p_root->left, level+1);
+
+		rbt_display(p_root->left, level + 1);
 	}
 
 	printf("\n");
@@ -225,10 +240,12 @@ void rbt_display(struct reb_node *p_root,int level)
 
 int main()
 {
-	sentinel = (struct reb_node *) malloc(sizeof(struct reb_node));
-	sentinel->key = -1;
-	sentinel->color = black;
-	root = sentinel;
+	// sentinel = (struct rbt_node *) malloc(sizeof(struct rbt_node));
+	// sentinel->key = -1;
+	// sentinel->color = black;
+	// _root = sentinel;
+
+	rbt_create_root();
 
 	rbt_insert(10);
 	rbt_insert(80);
@@ -239,7 +256,7 @@ int main()
 	rbt_insert(70);
 	rbt_insert(40);
 
-	rbt_display(root,0);
+	rbt_display(_root,0);
 
 
 
@@ -263,7 +280,7 @@ int main()
 
 			case 2:
 				printf("\n");
-				rbt_display(root,0);
+				rbt_display(_root,0);
 				printf("\n");
 				break;
 
