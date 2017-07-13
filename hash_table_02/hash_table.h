@@ -40,7 +40,8 @@ struct hash_element_iter {
 
 /* function */
 
-unsigned int hash_table_calc_hash(char* str);
+unsigned int hash_table_calc_hash_djb2(char * str);
+unsigned int hash_table_calc_hash_BKDR(char * str);
 
 hash_table_t * hash_table_create(unsigned int _capacity);
 void * hash_table_put(hash_table_t * _ht, char * _key, void * _data);

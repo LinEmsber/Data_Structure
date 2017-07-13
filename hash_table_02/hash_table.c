@@ -6,13 +6,27 @@
 
 #include "hash_table.h"
 
-/* hash function use DJB2 algorithm. */
-unsigned int hash_table_calc_hash(char* str)
+/* Hash function use DJB2 hash algorithm. */
+unsigned int hash_table_calc_hash_djb2(char * str)
 {
 	unsigned int hash = 5381;
 	int c;
 	while ((c = *str++) != 0)
 		hash = ((hash << 5) + hash) + c;
+
+	return hash;
+}
+
+/* Hash function use BKDR hash algorithm.  */
+unsigned int hash_table_calc_hash_BKDR(char * str)
+{
+	unsigned int hash = 0;
+	unsigned int seed = 131;
+
+	while ( *str ){
+		hash = (hash * seed) + (*str);
+		str++;
+	}
 
 	return hash;
 }
@@ -56,7 +70,7 @@ void * hash_table_put(hash_table_t * _ht, char * _key, void * _data)
 		return NULL;
 	}
 
-	unsigned int hash_code = hash_table_calc_hash(_key) % _ht->capacity;
+	unsigned int hash_code = hash_table_calc_hash_BKDR(_key) % _ht->capacity;
 	hash_elem_t * he = _ht->table[hash_code];
 
 	/* If the hash element have already occupied by the other data. */
@@ -92,7 +106,7 @@ void * hash_table_put(hash_table_t * _ht, char * _key, void * _data)
 /* Using the key to retrieve data from the hash table */
 void * hash_table_get(hash_table_t * _ht, char * _key)
 {
-	unsigned int hash_code = hash_table_calc_hash(_key) % _ht->capacity;
+	unsigned int hash_code = hash_table_calc_hash_BKDR(_key) % _ht->capacity;
 	hash_elem_t * he = _ht->table[hash_code];
 
 	while(he != NULL) {
@@ -112,7 +126,7 @@ void * hash_table_get(hash_table_t * _ht, char * _key)
  */
 void * hash_table_remove(hash_table_t * _ht, char * _key)
 {
-	unsigned int hash_code = hash_table_calc_hash(_key) % _ht->capacity;
+	unsigned int hash_code = hash_table_calc_hash_BKDR(_key) % _ht->capacity;
 	hash_elem_t * he = _ht->table[hash_code];
 	hash_elem_t * prev = NULL;
 
