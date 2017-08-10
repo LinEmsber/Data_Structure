@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 
 /* typedef */
@@ -34,7 +35,7 @@ struct node
 int compare_value(int value_1, int value_2);
 
 node_t * node_create();
-void node_remove(node_t * node);
+void node_remove_all_node(node_t * node);
 node_t * node_init(node_t * node);
 
 node_t * node_input_value(node_t * node, int value);
@@ -67,16 +68,18 @@ node_t * node_remove_node(node_t * node, int value);
 int * tree_remove_node(tree_t * tree, int input_value);
 void node_remove_left_most(node_t * node);
 
-node_t * is_node_contain_value(node_t * node, int iuput_value);
-tree_t * is_tree_contain_value(tree_t * tree, int iuput_value);
+int is_node_contain_value(node_t * _node, int _value);
+int is_tree_contain_value(tree_t * tree, int _value);
 
-int node_level(node_t * node);
+int node_height(node_t * node);
+int tree_height(tree_t * tree);
+
 int print_given_level(node_t * root, int level);
 
 void print_breadth_first_search(node_t * root);
 
-void DFS_pre_order(node_t * root);
-void DFS_in_order(node_t * root);
+int DFS_pre_order(node_t * root);
+int DFS_in_order(node_t * root);
 int DFS_post_order(node_t * root);
 
 

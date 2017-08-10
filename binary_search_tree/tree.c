@@ -46,11 +46,11 @@ node_t * node_create()
  *
  * @tree: the node want to remove.
  */
-void node_remove(node_t * node)
+void node_remove_all_node(node_t * node)
 {
 	if (node != NULL){
-		node_remove(node -> left);
-		node_remove(node -> right);
+		node_remove_all_node(node -> left);
+		node_remove_all_node(node -> right);
 		free(node);
 	}
 }
@@ -90,9 +90,9 @@ node_t * node_input_data(node_t * node, void *input_data)
 
 /* Allocate a memory for a tree.
 */
-tree_t *tree_create()
+tree_t * tree_create()
 {
-	tree_t *tree = (tree_t *) malloc ( sizeof(tree_t) );
+	tree_t * tree = (tree_t *) malloc ( sizeof(tree_t) );
 	return tree;
 }
 
@@ -112,10 +112,10 @@ void tree_init( tree_t *tree)
  *
  * @tree: the tree want to remove.
  */
-void tree_remove(tree_t *tree)
+void tree_remove(tree_t * tree)
 {
 	if ( tree != NULL && tree->root != NULL ){
-		node_remove(tree -> root);
+		node_remove_all_node(tree -> root);
 		tree -> root = NULL;
 		tree -> count = 0;
 	}
@@ -138,7 +138,7 @@ int tree_count(tree_t *tree)
  * @root: the tree we want to search
  * @taret_value: the specific value
  */
-node_t *search_recurively(node_t *root, int target_value)
+node_t * search_recurively(node_t * root, int target_value)
 {
 	if (root == NULL){
 
@@ -166,7 +166,7 @@ node_t *search_recurively(node_t *root, int target_value)
  * @root: the tree we want to search
  * @taret_value: the specific value
  */
-node_t *search_iteratively(node_t *root, int target_value)
+node_t * search_iteratively(node_t * root, int target_value)
 {
 	node_t *current = root;
 
@@ -191,7 +191,7 @@ node_t *search_iteratively(node_t *root, int target_value)
 
 /* insert node */
 
-/* insert a node into a node
+/* Insert a node into a node
  *
  * @node: the node to be inserted node
  * @value: the value of inserted node
@@ -202,31 +202,36 @@ node_t * node_insert_node( node_t * node, int value)
 		node_t * new_node = node_create();
 		node_init(new_node);
 		node_input_value(node, value);
-		return new_node;
 
-	}else{
+		return new_node;
+	}
+
+	else{
 		int compare_ret = compare_value(node->value, value);
 
-		// If node -> value > input_value, turn left.
+		/* If node -> value > input_value, turn left. */
 		if (compare_ret == -1 ){
 			node -> left = node_insert_node(node->left, value);
+		}
 
-			// If node -> value < input_value, turn right.
-			// It the input_value has already contained in the tree, and put it in the right side.
-		}else if (compare_ret == 1 || compare_ret == 0){
+		/* If node -> value < input_value, turn right.
+		 * It the input_value has already contained in the tree, and put it in the right side.
+		 */
+		else if (compare_ret == 1 || compare_ret == 0){
 			node -> right = node_insert_node(node->right, value);
 
 		}
+
 		return node;
 	}
 }
 
-/* insert a node into a tree
+/* Insert a node into a tree
  *
  * @tree: the tree to be inserted node
  * @value: the value of inserted node
  */
-tree_t *tree_insert_node( tree_t *tree, int value)
+tree_t * tree_insert_node( tree_t * tree, int value)
 {
 	tree -> root = node_insert_node(tree->root, value);
 	(tree -> count) ++;
@@ -278,7 +283,7 @@ node_t * node_min_2(node_t * node)
  *
  * @node: the tree for searching.
  */
-node_t *tree_min(tree_t *tree)
+node_t * tree_min(tree_t *tree)
 {
 	return node_min_2(tree -> root);
 }
@@ -388,8 +393,7 @@ node_t * node_find_parent(node_t * node, node_t * target_node)
 	return NULL;
 }
 
-// node remove node
-
+/* Node remove node. */
 node_t * node_remove_node(node_t * root, int value)
 {
 	if (root == NULL)
@@ -405,7 +409,7 @@ node_t * node_remove_node(node_t * root, int value)
 		root->right = node_remove_node(root->right, value);
 	}
 
-	/* if value is same as root's value. */
+	/* If value is same as root's value. */
 	else {
 		// node with only one child or no child
 		if (root->left == NULL) {
@@ -434,25 +438,27 @@ node_t * node_remove_node(node_t * root, int value)
 	return root;
 }
 
-// To remove a node that is with specific value from a tree.
-int *tree_remove_node(tree_t *tree, int input_value)
-{
-	node_remove_node(tree->root, input_value);
-	(tree->count)--;
-	return tree;
-}
+// TODO: check the return value.
+/* Remove a node that is with specific value from a tree. */
+// int * tree_remove_node(tree_t *tree, int input_value)
+// {
+// 	node_remove_node(tree->root, input_value);
+// 	(tree->count)--;
+// 	return tree;
+// }
 
-// To remove the left most node.
+/* Remove the left most node. */
 void node_remove_left_most(node_t * node)
 {
 	if (node != NULL){
 
-		// when the node is the left most node, we remove and free it.
+		/* When the node is the left most node, we remove and free it. */
 		if (node->left == NULL){
 			free(node);
+		}
 
-		// the node is not the left most node, so still to find it.
-		}else {
+		/* The node is not the left most node, so still to find it. */
+		else {
 			node_remove_left_most(node->left);
 		}
 	}
@@ -460,33 +466,34 @@ void node_remove_left_most(node_t * node)
 
 /* operation */
 
-// To check the value is contained in a hierarchy of a node.
-node_t * is_node_contain_value(node_t * _node, int _value)
+/* Check the value is contained in a hierarchy of a node. */
+int is_node_contain_value(node_t * _node, int _value)
 {
-	int value = _value;
 	node_t * current = _node;
 
 	while(1){
-		if ( compare_num(current -> value, _value) == -1 ){
+		if ( compare_value(current -> value, _value) == -1 ){
 			if (current -> left != NULL){
 				current = current -> left;
 			}else{
 				return 0;
 			}
-		}else if( compare_num(current -> value, _value) == 1 ){
+		}else if( compare_value(current -> value, _value) == 1 ){
 			if (current -> right != NULL){
 				current = current -> right;
 			}else{
 				return 0;
 			}
-		}else if( compare_num(current -> value, _value) == 0 ){
+		}else if( compare_value(current -> value, _value) == 0 ){
 			return 1;
 		}
 	}
+
+	return -1;
 }
 
 // To check a tree is contained a node with specific value.
-tree_t * is_tree_contain_value(tree_t * tree, int _value)
+int is_tree_contain_value(tree_t * tree, int _value)
 {
 	int value = _value;
 	node_t * current = tree -> root;
@@ -496,22 +503,26 @@ tree_t * is_tree_contain_value(tree_t * tree, int _value)
 
 // Compute the level(height) of a tree, the number of nodes along the longest path
 // from the root node down to the farthest leaf node.
-int node_level(node_t * node)
+int node_height(node_t * node)
 {
-	if (node == NULL){
+	if (node == NULL)
 		return 0;
-	}else{
-		// compute the height of each subtree
-		int lheight = node_level(node->left);
-		int rheight = node_level(node->right);
 
-		// use the larger one
-		if (lheight > rheight){
-			return lheight + 1;
-		}else{
-			return rheight + 1;
-		}
+	// compute the height of each subtree
+	int lheight = node_height(node->left);
+	int rheight = node_height(node->right);
+
+	// use the larger one
+	if (lheight > rheight){
+		return lheight + 1;
+	}else{
+		return rheight + 1;
 	}
+}
+
+int tree_height(tree_t * tree)
+{
+	return node_height(tree->root);
 }
 
 /* breadth first search */
@@ -537,7 +548,7 @@ int print_given_level(node_t * root, int level)
 // To print level order traversal a tree
 void print_breadth_first_search(node_t * root)
 {
-	int h = tree_height(root);
+	int h = node_height(root);
 	int i;
 	for (i=1; i<=h; i++){
 		print_given_level(root, i);
@@ -561,66 +572,54 @@ void print_breadth_first_search(node_t * root)
  */
 
 // The depth first search pre order.
-void DFS_pre_order(node_t *root)
+int DFS_pre_order(node_t * root)
 {
-	int ret = 0;
-
 	if (root == NULL)
-		return 0;
+		return -1;
 
-	if (root){
-		ret = root->value;
+	printf("%d ", root->value);
+	return 0;
 
-		if (root->left)	{
-			DFS_in_order(root->left);
-		}
-
-		if (root->right){
-			DFS_in_order(root->right);
-		}
+	if (root->left)	{
+		DFS_in_order(root->left);
 	}
-	return ret;
+
+	if (root->right){
+		DFS_in_order(root->right);
+	}
 }
 
 // The depth first search in order.
-void DFS_in_order(node_t *root)
+int DFS_in_order(node_t * root)
 {
-	int ret = 0;
-
 	if (root == NULL)
-		return 0;
+		return -1;
 
-	if (root){
-		if (root->left)	{
-			DFS_in_order(root->left);
-		}
-
-		ret = root->value;
-
-		if (root->right){
-			DFS_in_order(root->right);
-		}
+	if (root->left)	{
+		DFS_in_order(root->left);
 	}
-	return ret;
+
+	printf("%d ", root->value);
+	return 0;
+
+	if (root->right){
+		DFS_in_order(root->right);
+	}
 }
 
 // The depth first search post order
-int DFS_post_order(node_t *root)
+int DFS_post_order(node_t * root)
 {
-	int ret = 0;
-
 	if (root == NULL)
-		return 0;
+		return -1;
 
-	if (root){
-		if (root->left)	{
-			DFS_post_order(root->left);
-		}
-		if (root->right){
-			DFS_post_order(root->right);
-		}
-
-		ret = root->value;
+	if (root->left)	{
+		DFS_post_order(root->left);
 	}
-	return ret;
+	if (root->right){
+		DFS_post_order(root->right);
+	}
+
+	printf("%d ", root->value);
+	return 0;
 }
