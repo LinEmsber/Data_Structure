@@ -42,7 +42,8 @@ node_t * node_input_value(node_t * node, int value);
 node_t * node_insert_node( node_t * node, int value);
 
 tree_t * tree_create();
-void tree_init( tree_t * tree);
+tree_t * tree_init( tree_t * tree);
+
 void tree_remove(tree_t * tree);
 int tree_count(tree_t * tree);
 

@@ -38,7 +38,7 @@ int compare_value(int value_1, int value_2)
 node_t * node_create()
 {
 	node_t * node = (node_t *) malloc ( sizeof(node_t) );
-	return node;
+	return node_init(node);
 }
 
 
@@ -93,7 +93,7 @@ node_t * node_input_data(node_t * node, void *input_data)
 tree_t * tree_create()
 {
 	tree_t * tree = (tree_t *) malloc ( sizeof(tree_t) );
-	return tree;
+	return tree_init(tree);
 }
 
 
@@ -101,10 +101,11 @@ tree_t * tree_create()
  *
  * @tree: the tree want to initialize.
  */
-void tree_init( tree_t *tree)
+tree_t * tree_init( tree_t * tree)
 {
 	tree -> root = NULL;
 	tree -> count = 0;
+	return tree;
 }
 
 
@@ -196,29 +197,29 @@ node_t * search_iteratively(node_t * root, int target_value)
  * @node: the node to be inserted node
  * @value: the value of inserted node
  */
-node_t * node_insert_node( node_t * node, int value)
+node_t * node_insert_node( node_t * node, int _value)
 {
 	if (node == NULL){
 		node_t * new_node = node_create();
-		node_init(new_node);
-		node_input_value(node, value);
+		// node_init(new_node);
+		node_input_value(new_node, _value);
 
 		return new_node;
 	}
 
 	else{
-		int compare_ret = compare_value(node->value, value);
+		int compare_ret = compare_value(node->value, _value);
 
-		/* If node -> value > input_value, turn left. */
+		/* If (node->value) > i(nput_value,) turn left. */
 		if (compare_ret == -1 ){
-			node -> left = node_insert_node(node->left, value);
+			node -> left = node_insert_node(node->left, _value);
 		}
 
-		/* If node -> value < input_value, turn right.
+		/* If (node->value) <= (input_value), turn right.
 		 * It the input_value has already contained in the tree, and put it in the right side.
 		 */
 		else if (compare_ret == 1 || compare_ret == 0){
-			node -> right = node_insert_node(node->right, value);
+			node -> right = node_insert_node(node->right, _value);
 
 		}
 
@@ -399,19 +400,25 @@ node_t * node_remove_node(node_t * root, int value)
 	if (root == NULL)
 		return root;
 
-	/* If the value to be deleted is smaller than the root's value. */
+	/* If the node's value is smaller than the root's value, turn left. */
 	if (value < root->value) {
 		root->left = node_remove_node(root->left, value);
 	}
 
-	/* If the value to be deleted is greater than the root's value. */
+	/* If the node's value is greater than the root's value, trun right. */
 	else if (value > root->value){
 		root->right = node_remove_node(root->right, value);
 	}
 
-	/* If value is same as root's value. */
+	/* If we find the target node. There are three case:
+	 * 1. Node to be deleted is leaf: Simply remove from the tree.
+	 * 2. Node to be deleted has only one child: Copy the child to the node and delete the child
+	 * 3. Node to be deleted has two children: Find inorder successor of the node. Copy contents
+	 *    of the inorder successor to the node and delete the inorder successor. Note that inorder
+	 *    predecessor can also be used.
+	 */
 	else {
-		// node with only one child or no child
+		/* The node with only one child or no child. */
 		if (root->left == NULL) {
 			node_t * temp = root->right;
 			free(root);
@@ -426,7 +433,8 @@ node_t * node_remove_node(node_t * root, int value)
 		/* If the node with two children, then get the inorder successor
 		 * (e.g. the smallest node in the right subtree).
 		 */
-		node_t * temp = node_min(root->right);
+		// TODO: fix node_min()
+		node_t * temp = node_min_2(root->right);
 
 		/* Copy the inorder successor's content to this node. */
 		root->value = temp->value;
