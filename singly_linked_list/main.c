@@ -19,48 +19,60 @@ int main()
 	int i;
 	int ret = 0;
 
+	node_t * p_tail, * p_tmp;
 	node_t * p_element[NODE_NUMS];
-
-	/* create a head node */
-	node_t * start = node_create(0);
+	node_t * root = node_create(0);
 
 	for (i = 0; i < NODE_NUMS; i ++){
 
-		/* create nodes */
 		p_element[i] = node_create(i * 10 + 10);
 		if(p_element == NULL)
 			printf("error\n");
 
-		/* insert nodes behind head, FILO */
-		ret = node_insert( start, p_element[i] );
+		/* Insert nodes behind head, FILO. */
+		ret = node_insert( root, p_element[i] );
 		if (ret < 0)
 			printf("error\n");
 	}
 
-        ret = print_list( start );
+	printf("Original: \n");
+        print_list( root );
+
+	/* Use iterative method to reverse list. */
+	printf("Reverse list: \n");
+	p_tail = tail_node(root);
+	ret = node_reverse_return_int(root);
+	if ( ret < 0 )
+		return -1;
+	print_list(p_tail);
+
+	printf("Reverse list, again: \n");
+	p_tmp = node_reverse_iterative(p_tail);
+	print_list(p_tmp);
 
 
-	/* reverse list */
+	/* Use swap_nodes() to reverse list. */
 	for (i = 0; i < NODE_NUMS / 2; i ++){
-		swap_nodes( &start, &p_element[i], &p_element[NODE_NUMS - 1 - i]);
+		swap_nodes( &root, &p_element[i], &p_element[NODE_NUMS - 1 - i]);
 	}
 
-	ret = print_list( start );
+	printf("Use swap_nodes() to reverse list: \n");
+	print_list( root );
 
-
-	/* delete one node from list */
-        ret = node_delete( start, 30);
+	/* Delete one node from list */
+        ret = node_delete( root, 30);
 	if (ret < 0)
 		printf("error\n");
 
-	ret = node_delete( start, 10);
+	ret = node_delete( root, 10);
 	if (ret < 0)
 		printf("error\n");
 
-        ret = print_list( start );
+	printf("Delete node 30 and node 10: \n");
+        print_list(root);
 
-	/* free all nodes of list */
-	ret = node_free_all(start);
+	/* Free all nodes of list */
+	ret = node_free_all(root);
 	if (ret < 0)
 		printf("error\n");
 

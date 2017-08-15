@@ -118,7 +118,7 @@ int print_list(node_t * head)
 	node_t * current = head;
 
 	while ( current != NULL ){
-		printf("%d\n", current->val);
+		printf("%d ", current->val);
 		current = current -> next;
 	}
 	printf("\n");
@@ -178,6 +178,64 @@ int swap_nodes(node_t **head, node_t **node_1, node_t **node_2)
 	tmp = first->next;
 	first->next = second->next;
 	second->next = tmp;
+
+	return 0;
+}
+
+/* Use iterative method to reverse linked list. */
+node_t * node_reverse_iterative(node_t * head)
+{
+	if(head == NULL)
+		return NULL;
+
+        node_t * pre = NULL;
+        node_t * head_next_tmp;
+
+        while(head != NULL){
+                head_next_tmp = head->next;
+                head->next = pre;
+                pre = head;
+                head = head_next_tmp;
+        }
+
+	return pre;
+}
+
+
+/* Traversal to the tail node. */
+node_t * tail_node(node_t * head)
+{
+	if ( head == NULL )
+		return NULL;
+
+	node_t * current = head;
+	node_t * prev = NULL;
+	while(current != NULL){
+		prev = current;
+		current = current->next;
+	}
+	return prev;
+}
+
+/* Reverse linked list.
+ * Retrun 0 for success, and -1 for fail.
+ */
+int node_reverse_return_int(node_t * head)
+{
+	if(head == NULL)
+		return -1;
+
+	node_t * current = head;
+	node_t * next = NULL;
+	node_t * prev = NULL;
+
+	while ( current != NULL ){
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+	head = prev;
 
 	return 0;
 }

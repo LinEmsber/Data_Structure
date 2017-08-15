@@ -31,7 +31,13 @@ int node_free_all(node_t * head);
 
 int print_list(node_t * head);
 
-node_t * previous_node(node_t * head, node_t * target_node)
-int swap_nodes(node_t **head, node_t **node_1, node_t **node_2)
+node_t * previous_node(node_t * head, node_t * target_node);
+int swap_nodes(node_t **head, node_t **node_1, node_t **node_2);
+
+node_t * node_reverse_iterative(node_t * head);
+
+node_t * tail_node(node_t * head);
+int node_reverse_return_int(node_t * head);
+
 
 #endif
