@@ -7,47 +7,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-/*
- * TODO:
- * 	rbt_insert function add argument: _root
- *	how to deal with sentinel in argument
- */
-
-struct rbt_node {
-	enum {black, red} color;
-	int key;
-	struct rbt_node * left;
-	struct rbt_node * right;
-	struct rbt_node * parent;
-};
-
-int rbt_insert (struct rbt_node * _root, int);
-void rbt_insert_balance(struct rbt_node * _root, struct rbt_node * p_new );
-void rbt_rotate_left(struct rbt_node * _root, struct rbt_node * p_root);
-void rbt_rotate_right(struct rbt_node * _root, struct rbt_node * p_root);
-void rbt_display(struct rbt_node * p_root, int level);
+#include "rbt.h"
 
 
-
-void rbt_create_root()
+void rbt_init()
 {
-	static struct rbt_node * _root;
-	/* The sentinel will be the parent of _root node and replace NULL */
-	static struct rbt_node * sentinel;
+	/* The sentinel will be the parent of root node and replace NULL */
 
 	sentinel = (struct rbt_node *) malloc(sizeof(struct rbt_node));
 	sentinel->key = -1;
 	sentinel->color = black;
-	_root = sentinel;
+	root = sentinel;
 }
 
-int rbt_insert (struct rbt_node * _root, int _key )
+int rbt_insert (int _key )
 {
 	struct rbt_node * p_new, * p_root, * p_parent;
 
 	p_parent = sentinel;
-	p_root = _root;
+	p_root = root;
 
 	/* find the right position for new node and its parent. */
 	while( p_root != sentinel ) {
@@ -73,7 +51,7 @@ int rbt_insert (struct rbt_node * _root, int _key )
 	p_new->parent = p_parent;
 
 	if(p_parent == sentinel)
-		_root = p_new;
+		root = p_new;
 
 	else if(p_new ->key < p_parent->key )
 		p_parent->left = p_new;
@@ -86,7 +64,7 @@ int rbt_insert (struct rbt_node * _root, int _key )
 	return 0;
 }
 
-void rbt_insert_balance(struct rbt_node * _root, struct rbt_node * p_new )
+void rbt_insert_balance(struct rbt_node * p_new )
 {
 	struct rbt_node * p_uncle, * p_parent, * p_grand;
 
@@ -156,11 +134,11 @@ void rbt_insert_balance(struct rbt_node * _root, struct rbt_node * p_new )
 
 	}
 
-	_root->color = black;
+	root->color = black;
 }
 
 
-void rbt_rotate_left(struct rbt_node * _root, struct rbt_node * p_node)
+void rbt_rotate_left(struct rbt_node * p_node)
 {
 	struct rbt_node * p_node_r;
 
@@ -174,7 +152,7 @@ void rbt_rotate_left(struct rbt_node * _root, struct rbt_node * p_node)
 	p_node_r->parent = p_node->parent;
 
 	if(p_node->parent == sentinel )
-		_root = p_node_r;
+		root = p_node_r;
 
 	else if( p_node == p_node->parent->left )
 		p_node->parent->left = p_node_r;
@@ -186,7 +164,7 @@ void rbt_rotate_left(struct rbt_node * _root, struct rbt_node * p_node)
 	p_node->parent = p_node_r;
 }
 
-void rbt_rotate_right(struct rbt_node * _root, struct rbt_node * p_node)
+void rbt_rotate_right(struct rbt_node * p_node)
 {
 	struct rbt_node * p_node_l;
 
@@ -200,7 +178,7 @@ void rbt_rotate_right(struct rbt_node * _root, struct rbt_node * p_node)
 	p_node_l->parent = p_node->parent;
 
 	if(p_node->parent == sentinel )
-		_root = p_node_l;
+		root = p_node_l;
 
 	else if( p_node == p_node->parent->right )
 		p_node->parent->right = p_node_l;
@@ -210,6 +188,15 @@ void rbt_rotate_right(struct rbt_node * _root, struct rbt_node * p_node)
 
 	p_node_l->right = p_node;
 	p_node->parent = p_node_l;
+}
+
+void rbt_free()
+{
+	if (root != NULL && root != sentinel){
+		rbt_free(root -> left);
+		free(root);
+		rbt_free(root -> right);
+	}
 }
 
 
@@ -235,64 +222,4 @@ void rbt_display(struct rbt_node * p_root, int level)
 	}
 
 	printf("\n");
-}
-
-
-int main()
-{
-	// sentinel = (struct rbt_node *) malloc(sizeof(struct rbt_node));
-	// sentinel->key = -1;
-	// sentinel->color = black;
-	// _root = sentinel;
-
-	rbt_create_root();
-
-	rbt_insert(10);
-	rbt_insert(80);
-	rbt_insert(30);
-	rbt_insert(20);
-	rbt_insert(90);
-	rbt_insert(50);
-	rbt_insert(70);
-	rbt_insert(40);
-
-	rbt_display(_root,0);
-
-
-
-/*
-	while(1)
-	{
-		printf("\n");
-		printf("1.Insert\n");
-		printf("2.Display\n");
-		printf("3.Quit\n");
-		printf("\nEnter your choice : ");
-		scanf("%d",&choice);
-
-		switch(choice)
-		{
-			case 1:
-				printf("\nEnter the number to be inserted : ");
-				scanf("%d",&num);
-				rbt_insert(num);
-				break;
-
-			case 2:
-				printf("\n");
-				rbt_display(_root,0);
-				printf("\n");
-				break;
-
-			case 3:
-				exit(1);
-
-			default:
-				printf("Wrong choice\n");
-
-		}
-	}
-*/
-
-	return 0;
 }
