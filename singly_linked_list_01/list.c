@@ -22,8 +22,8 @@ node_t * node_create(int val)
 	return n;
 }
 
-/* Add a new node. */
-int node_insert(node_t * head, node_t * n)
+/* The new node is always added before the head of the given list. */
+int node_insert_front(node_t * head, node_t * n)
 {
 	if (head == NULL || n == NULL)
 		return -1;
@@ -31,6 +31,35 @@ int node_insert(node_t * head, node_t * n)
 	n -> next = head -> next;
 	head -> next = n;
 
+	return 0;
+}
+
+/* The new node is added after the given node. */
+int node_insert_after_node(node_t * prev_node, node_t * n)
+{
+	if ( prev_node == NULL)
+		return -1;
+
+	n -> next = prev_node -> next;
+	prev_node -> next = n;
+
+	return 0;
+}
+
+/* The new node is always added after the last node of the given list. */
+int node_insert_end(node_t * head, node_t * n)
+{
+	node_t * last = head;
+
+	if ( head == NULL ){
+		head = n;
+		return 0;
+	}
+
+	while ( last -> next != NULL )
+		last = last -> next;
+
+	last -> next = n;
 	return 0;
 }
 
@@ -163,7 +192,7 @@ int swap_nodes(node_t ** head, node_t ** node_1, node_t ** node_2)
 	tmp = first->next;
 	first->next = second->next;
 	second->next = tmp;
-	
+
 	return 0;
 }
 
@@ -187,25 +216,27 @@ int print_list(node_t * head)
 int main()
 {
 	int ret = 0;
-
 	node_t * tmp;
 
 	/* Create root. */
 	node_t * root = node_create(0);
 
 	/* Add nodes. */
-	node_t * n_1 = node_create(10);
-	node_t * n_3 = node_create(30);
-	node_t * n_5 = node_create(50);
-	node_t * n_7 = node_create(70);
-	ret = node_insert(root, n_1);
-	ret = node_insert(root, n_3);
-	ret = node_insert(root, n_5);
-	ret = node_insert(root, n_7);
+	node_t * n_1 = node_create(1);
+	node_t * n_3 = node_create(3);
+	node_t * n_5 = node_create(5);
+	node_t * n_7 = node_create(7);
+	ret = node_insert_front(root, n_1);
+	ret = node_insert_front(root, n_3);
+	ret = node_insert_front(root, n_5);
+	ret = node_insert_front(root, n_7);
 	print_list(root);
 
 	/* Delete a node.*/
-	ret = node_delete(root, 30);
+	ret = node_delete(root, 3);
+	if (ret == -1)
+		printf("Error\n");
+
 	print_list(root);
 
 	/* Reverse list. The root becomes value 10. */
@@ -214,26 +245,52 @@ int main()
 	print_list(root);
 
 	/* Delete the list. */
-	ret = node_delete(root, 50);
-	ret = node_delete(root, 70);
+	ret = node_delete(root, 5);
+	ret = node_delete(root, 7);
 	tmp = node_reverse_iterative(root);
 	root = tmp;
-	ret = node_delete(root, 10);
+	ret = node_delete(root, 1);
+	if (ret == -1)
+		printf("Error\n");
+
 	print_list(root);
-	
+
 	/* Add nodes. */
-	node_t * n_2 = node_create(20);
-	node_t * n_4 = node_create(40);
-	node_t * n_6 = node_create(60);
-	node_t * n_8 = node_create(80);
-	ret = node_insert(root, n_2);
-	ret = node_insert(root, n_4);
-	ret = node_insert(root, n_6);
-	ret = node_insert(root, n_8);
+	node_t * n_2 = node_create(2);
+	node_t * n_4 = node_create(4);
+	node_t * n_6 = node_create(6);
+	node_t * n_8 = node_create(8);
+	ret = node_insert_front(root, n_2);
+	ret = node_insert_front(root, n_4);
+	ret = node_insert_front(root, n_6);
+	ret = node_insert_front(root, n_8);
+	if (ret == -1)
+		printf("Error\n");
+
 	print_list(root);
 
 	/* Swap the root and the last node. It change the root. */
 	swap_nodes(&root, &root, &n_1);
+	print_list(root);
+
+	/* Add nodes to the specific node. */
+	node_t * n_11 = node_create(11);
+	node_t * n_13 = node_create(13);
+	ret = node_insert_after_node(n_6, n_11);
+	ret = node_insert_after_node(n_6, n_13);
+	if (ret == -1)
+		printf("Error\n");
+
+	print_list(root);
+
+	/* Add nodes to the end of list. */
+	node_t * n_21 = node_create(21);
+	node_t * n_23 = node_create(23);
+	ret = node_insert_end(root, n_21);
+	ret = node_insert_end(root, n_23);
+	if (ret == -1)
+		printf("Error\n");
+
 	print_list(root);
 
 	return 0;
