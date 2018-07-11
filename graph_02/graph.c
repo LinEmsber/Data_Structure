@@ -19,6 +19,7 @@ struct node * create_node(int v);
 struct Graph * create_graph(int);
 void add_edge(struct Graph *, int, int);
 void print_graph(struct Graph *);
+void DFS(struct Graph *, int);
 
 struct node * create_node(int v)
 {
@@ -65,12 +66,18 @@ void add_edge(struct Graph * graph, int src, int dest)
 
 void print_graph(struct Graph * graph)
 {
-	int v;
-	for (v = 0; v < graph->num_vertices; v++) {
-		struct node * tmp = graph->adjacent_list[v];
-		printf("\nAdjacency list of vertex %d\n", v);
-		while (tmp) {
-			printf("%d -> ", tmp->vertex);
+	struct node * tmp = NULL;
+
+	for (int i = 0; i < graph->num_vertices; i++) {
+		tmp = graph->adjacent_list[i];
+		printf("\nAdjacency list of vertex %d\n", i);
+
+		while (tmp ) {
+
+			printf("%d", tmp->vertex);
+			if (tmp->next != NULL)
+				printf(" -> ");
+
 			tmp = tmp->next;
 		}
 		printf("\n");
@@ -78,19 +85,52 @@ void print_graph(struct Graph * graph)
 	printf("\n");
 }
 
+void DFS(struct Graph * graph, int vertex)
+{
+	struct node * adj_list = graph->adjacent_list[vertex];
+	struct node * tmp = adj_list;
+
+	graph->visited[vertex] = 1;
+	printf("Visited %d \n", vertex);
+
+	while(tmp != NULL) {
+
+		int connected_vertex = tmp->vertex;
+		if(graph->visited[connected_vertex] == 0) {
+			DFS(graph, connected_vertex);
+		}
+
+		tmp = tmp->next;
+	}
+}
+
 int main()
 {
-        struct Graph * graph = create_graph(6);
+	struct Graph * graph = create_graph(6);
+
+#if 0
 	add_edge(graph, 0, 1);
 	add_edge(graph, 0, 2);
+	add_edge(graph, 0, 5);
 	add_edge(graph, 1, 2);
-	add_edge(graph, 1, 4);
 	add_edge(graph, 2, 3);
-	add_edge(graph, 2, 5);
-	add_edge(graph, 4, 3);
-	add_edge(graph, 4, 5);
+	add_edge(graph, 2, 4);
+	add_edge(graph, 3, 4);
+	add_edge(graph, 3, 5);
+#endif
+
+	/* The same scenario of textbook, Algorithms 4th, at the page 533. */
+	add_edge(graph, 0, 5);
+	add_edge(graph, 2, 4);
+	add_edge(graph, 2, 3);
+	add_edge(graph, 1, 2);
+	add_edge(graph, 0, 1);
+	add_edge(graph, 3, 4);
+	add_edge(graph, 3, 5);
+	add_edge(graph, 0, 2);
 
 	print_graph(graph);
+	DFS(graph, 0);
 
 	return 0;
 }
