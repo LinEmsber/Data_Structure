@@ -14,8 +14,8 @@ typedef struct graph graph_t;
 struct vertex{
 	char label;
 	char is_visited;
-	int num_neighbors;
-	struct vertex ** neighbors;
+	int num_adjacent;
+	struct vertex ** adjacent_list;
 };
 
 struct graph{
@@ -30,5 +30,6 @@ graph_t * create_graph(int _num_edges, int _num_vertices);
 void setup_vertices(graph_t * _g);
 void connect_vertices(graph_t * _g);
 void setup_edge(graph_t * _g, vertex_t * _v_1, vertex_t * _v_2);
+void print_graph(graph_t * _g);
 
 #endif
