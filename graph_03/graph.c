@@ -54,22 +54,62 @@ void setup_edge(graph_t * _g, vertex_t * _v_1, vertex_t * _v_2)
 
 void print_graph(graph_t * _g)
 {
-        int i, j;
-        vertex_t * current;
-        printf("\nThis graph has %d Vertices and %d Edges\n", _g->num_vertices, _g->num_edges);
+	int i, j;
+	vertex_t * current;
+	printf("\nThis graph has %d Vertices and %d Edges\n", _g->num_vertices, _g->num_edges);
 
-        /* print the vertex set. */
-        for(i = 0; i < _g->num_vertices; ++i) {
+	/* print the vertex set. */
+	for(i = 0; i < _g->num_vertices; ++i) {
 
-                current = &(_g->vertex_set[i]);
-                printf("%c: ", current->label);
+		current = &(_g->vertex_set[i]);
+		printf("%c: ", current->label);
 
-                for(j = 0; j < current->num_adjacent - 1; ++j)
-                        printf("%c, ", current->adjacent_list[j]->label);
+		for(j = 0; j < current->num_adjacent - 1; ++j)
+			printf("%c, ", current->adjacent_list[j]->label);
 
-                if(current->adjacent_list > 0)
-                        printf("%c\n", current->adjacent_list[j]->label);
-                else
+		if(current->adjacent_list > 0)
+			printf("%c\n", current->adjacent_list[j]->label);
+		else
 			printf("\n");
-        }
+	}
+}
+
+int is_adjacent(vertex_t * _v_1, vertex_t * _v_2)
+{
+	for(int i = 0; i < _v_1->num_adjacent; i++)
+		if(	_v_1->adjacent_list[i] == _v_2)
+			return 1;
+	return 0;
+}
+
+void clear_visited(graph_t * g)
+{
+	int i;
+	for(i = 0; i < g->num_vertices; i++)
+		g->vertex_set[i].is_visited = 0;
+}
+
+int DFS_recursive_helper(graph_t * g, vertex_t * current, vertex_t * dst)
+{
+	current->is_visited = 1;
+
+	if(current == dst)
+		return 1;
+
+	for(int i = 0; i < current->num_adjacent; i++)
+		if( !(current->adjacent_list[i]->is_visited) )
+			if( DFS_recursive_helper(g, current->adjacent_list[i], dst) )
+				return 1;
+	return 0;
+}
+
+int DFS_recursive(graph_t * g, vertex_t * src, vertex_t * dst)
+{
+	clear_visited(g);
+	return DFS_recursive_helper(g, src, dst);
+}
+
+int DFS(graph_t * g, vertex_t * src, vertex_t * dst)
+{
+
 }
