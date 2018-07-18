@@ -89,27 +89,51 @@ void clear_visited(graph_t * g)
 		g->vertex_set[i].is_visited = 0;
 }
 
-int DFS_recursive_helper(graph_t * g, vertex_t * current, vertex_t * dst)
+int DFS_recursive_helper(graph_t * g, vertex_t * current, vertex_t * dest)
 {
 	current->is_visited = 1;
 
-	if(current == dst)
+	if(current == dest)
 		return 1;
 
 	for(int i = 0; i < current->num_adjacent; i++)
 		if( !(current->adjacent_list[i]->is_visited) )
-			if( DFS_recursive_helper(g, current->adjacent_list[i], dst) )
+			if( DFS_recursive_helper(g, current->adjacent_list[i], dest) )
 				return 1;
 	return 0;
 }
 
-int DFS_recursive(graph_t * g, vertex_t * src, vertex_t * dst)
+int DFS_recursive(graph_t * g, vertex_t * src, vertex_t * dest)
 {
 	clear_visited(g);
-	return DFS_recursive_helper(g, src, dst);
+	return DFS_recursive_helper(g, src, dest);
 }
 
-int DFS(graph_t * g, vertex_t * src, vertex_t * dst)
+void DFS_iterative(graph_t * g, vertex_t * src, vertex_t * dest)
 {
+	if ( src == dest)
 
+	/* Create and initialize queue. */
+	list_t * queue_object = (list_t *) malloc ( sizeof(list_t) );
+	init_list(queue_object);
+
+	list_head_insert_node(queue_object, src);
+
+	/* If the queue is not empty, keep traversal the graph. */
+	while ( !is_empty_list ){
+		vertex_t * current = list_tail_pop_node(queue_object)->data;
+		current->is_visited = 1;
+
+		if (current == dest)
+			return 1;
+
+		for ( int i; i < g->num_vertices; i++){
+			/* Iterate to each of vertex and add unvisited vertex into queue. */
+			if ( !(current->vertex_set[i]->is_visited) )
+				list_head_insert_node(queue_object, current->vertex_set[i]);
+		}
+	}
+
+	clear_visited(g);
+	free(queue_object);
 }

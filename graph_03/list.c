@@ -9,11 +9,11 @@ void init_list(list_t * list)
         list->tail = NULL;
 }
 
-node_t * create_node(int _value)
+node_t * create_node(void * _data)
 {
         struct node * new_node = (struct node *) malloc (sizeof(struct node ));
 
-        new_node->value = _value;
+        new_node->data = _data;
         new_node->next = new_node->prev = NULL;
 
         return new_node;
@@ -54,4 +54,9 @@ node_t * list_tail_pop_node(list_t * list)
         }
 
         return tmp;
+}
+
+int is_empty_list(list_t * list)
+{
+        return !(list->length);
 }

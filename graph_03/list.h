@@ -5,7 +5,7 @@ typedef struct node node_t;
 typedef struct list list_t;
 
 struct node{
-        int value;
+        void * data;
         struct node * next;
         struct node * prev;
 };
