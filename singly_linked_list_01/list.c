@@ -162,7 +162,7 @@ node_t * previous_node(node_t * head, node_t * target_node)
 	return prev;
 }
 
-
+/* Swap two nodes of singly linked list. */
 int swap_nodes(node_t ** head, node_t ** node_1, node_t ** node_2)
 {
 	if (head == NULL|| node_1 == NULL || node_2 == NULL)
@@ -177,7 +177,7 @@ int swap_nodes(node_t ** head, node_t ** node_1, node_t ** node_2)
 	first_prev = previous_node(*head, first);
 	second_prev = previous_node(*head, second);
 
-	/* Swap the previous nodes of both bodes. first and the second nodes. */
+	/* Swap the previous nodes of both nodes. */
 	if(first_prev)
 		first_prev->next = second;
 	else
